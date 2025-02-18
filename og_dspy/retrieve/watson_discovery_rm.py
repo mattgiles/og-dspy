@@ -8,7 +8,7 @@ import og_dspy
 from og_dsp.utils import dotdict
 
 
-class WatsonDiscoveryRM(dspy.Retrieve):
+class WatsonDiscoveryRM(og_dspy.Retrieve):
     """A retrieval module that uses Watson Discovery to return the top passages for a given query.
 
     Args:

@@ -18,7 +18,7 @@ class ModuleGraph:
         self.nodes = set()
         self.module_name = module_name
         self.module = module
-        self.inspect_settings(dspy.settings)
+        self.inspect_settings(og_dspy.settings)
         self.add_module(self.module_name, self.module)
 
     def inspect_settings(self, settings):
@@ -66,7 +66,7 @@ class ModuleGraph:
             if isinstance(sub_module, og_dspy.Predict):
                 sub_module_name = self.generate_module_name(sub_module_name, type(sub_module))
                 self.process_submodule(f"{module_name}__{sub_module_name}", sub_module)
-            elif isinstance(sub_module, (dspy.Module, og_dspy.Retrieve)):
+            elif isinstance(sub_module, (og_dspy.Module, og_dspy.Retrieve)):
                 self.add_module(f"{module_name}__{sub_module_name}", sub_module)
                 if isinstance(sub_module, og_dspy.Retrieve):
                     self.graph.edge("rm", 'lm', label='RM used in Module')
@@ -119,13 +119,13 @@ class ModuleGraph:
 
 # og_dspy.settings.configure(lm=llm, rm=colbertv2_wiki)
 
-# class GenerateAnswer(dspy.Signature):
+# class GenerateAnswer(og_dspy.Signature):
 #   "Answer with long and detailed answers"
 #   context = og_dspy.InputField(desc="may content relevant facts")
 #   question = og_dspy.InputField()
 #   answer = og_dspy.OutputField(desc="often between 10 and 50 words")
 
-# class RAG(dspy.Module):
+# class RAG(og_dspy.Module):
 #   def __init__(self, num_passages=3):
 #     super().__init__()
 #     self.retrieve = og_dspy.Retrieve(k=num_passages)

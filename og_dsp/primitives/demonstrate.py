@@ -80,7 +80,7 @@ class Example(dotdict):
 
 # def sample(train: list[Example], k: int):
 #     """Sample k examples from train."""
-#     rng = random.Random(dsp.settings.branch_idx)
+#     rng = random.Random(og_dsp.settings.branch_idx)
 #     shuffled_train = [og_dsp.Example(example) for example in train]
 #     rng.shuffle(shuffled_train)
 

@@ -42,7 +42,7 @@ class BasicGenerateInstruction(Signature):
     )
 
 
-class GenerateInstructionGivenAttempts(dspy.Signature):
+class GenerateInstructionGivenAttempts(og_dspy.Signature):
     """You are an instruction optimizer for large language models. I will give some task instructions I've tried, along with their corresponding validation scores. The instructions are arranged in increasing order based on their scores, where higher scores indicate better quality.
 
     Your task is to propose a new instruction that will lead a good language model to perform the task even better. Don't be afraid to be creative."""

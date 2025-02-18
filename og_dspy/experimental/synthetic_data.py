@@ -7,7 +7,7 @@ from pydantic import BaseModel
 import og_dspy
 
 
-class DescriptionSignature(dspy.Signature):
+class DescriptionSignature(og_dspy.Signature):
     field_name = og_dspy.InputField(desc="name of a field")
     example = og_dspy.InputField(desc="an example value for the field")
     description = og_dspy.OutputField(desc="a short text only description of what the field contains")
@@ -71,7 +71,7 @@ class SyntheticDataGenerator:
         class_name = f"{self.schema_class.__name__ if self.schema_class else 'Inferred'}Signature"
         fields = self._prepare_fields(properties)
 
-        signature_class = type(class_name, (dspy.Signature,), fields)
+        signature_class = type(class_name, (og_dspy.Signature,), fields)
         generator = og_dspy.Predict(signature_class, n=additional_samples_needed)
         response = generator(sindex=str(random.randint(1, additional_samples_needed)))
 

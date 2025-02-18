@@ -20,7 +20,7 @@ class EvalResult(BaseModel):
     actions: Optional[List[ActionOutput]] = None
 
 
-class Comparator(dspy.Signature):
+class Comparator(og_dspy.Signature):
     """After executing the given actions on user inputs using the given instruction, some inputs have yielded good, results, while others have not. I'll provide you the inputs along with their, corresponding evaluation metrics:
 
 Task:
@@ -50,7 +50,7 @@ Task:
     )
 
 
-class FeedbackBasedInstruction(dspy.Signature):
+class FeedbackBasedInstruction(og_dspy.Signature):
     """There is a task that needs to be completed for which one can use multiple tools to achieve the desired outcome. A group's performance was evaluated on a dataset of inputs, the inputs that did well are positive inputs, and the inputs that did not do well are negative inputs.
 
 You received feedback on how they can better use the tools to improve your performance on the negative inputs. You have been provided with the previous instruction, that they followed to use tools to complete the task, and the feedback on your performance.

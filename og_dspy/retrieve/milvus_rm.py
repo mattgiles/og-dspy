@@ -26,7 +26,7 @@ def openai_embedding_function(texts: List[str]):
     return [x.embedding for x in response.data]
 
 
-class MilvusRM(dspy.Retrieve):
+class MilvusRM(og_dspy.Retrieve):
     """
     A retrieval module that uses Milvus to return passages for a given query.
 

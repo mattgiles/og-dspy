@@ -36,7 +36,7 @@ except Exception:
     ERRORS = (openai.RateLimitError, openai.APIError)
 
 
-class MyScaleRM(dspy.Retrieve):
+class MyScaleRM(og_dspy.Retrieve):
     """
     A retrieval module that uses MyScaleDB to return the top passages for a given query.
 

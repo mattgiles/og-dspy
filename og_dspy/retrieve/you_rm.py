@@ -8,7 +8,7 @@ import og_dspy
 from og_dsp.utils import dotdict
 
 
-class YouRM(dspy.Retrieve):
+class YouRM(og_dspy.Retrieve):
     """Retriever for You.com's Search and News API.
 
     [API reference](https://documentation.you.com/api-reference/)

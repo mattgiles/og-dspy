@@ -11,7 +11,7 @@ except ImportError:
         "The 'marqo' extra is required to use MarqoRM. Install it with `pip install dspy-ai[marqo]`",
     )
 
-class MarqoRM(dspy.Retrieve):
+class MarqoRM(og_dspy.Retrieve):
     """
     A retrieval module that uses Marqo to return the top passages for a given query.
 

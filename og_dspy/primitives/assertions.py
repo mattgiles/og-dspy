@@ -219,7 +219,7 @@ def backtrack_handler(func, bypass_suggest=True, max_backtracks=2):
                         og_dsp.settings.trace.clear()
                         result = func(*args, **kwargs)
                         break
-                    except (DSPySuggestionError, DSPyAssertionError) as e:
+                    except (og_dspySuggestionError, DSPyAssertionError) as e:
                         if not current_error:
                             current_error = e
                         error_id, error_msg, error_target_module, error_state = (
@@ -237,7 +237,7 @@ def backtrack_handler(func, bypass_suggest=True, max_backtracks=2):
 
                         if og_dsp.settings.trace:
                             if error_target_module:
-                                for i in range(len(dsp.settings.trace) - 1, -1, -1):
+                                for i in range(len(og_dsp.settings.trace) - 1, -1, -1):
                                     trace_element = og_dsp.settings.trace[i]
                                     mod = trace_element[0]
                                     if mod.signature == error_target_module:
@@ -329,7 +329,7 @@ def assert_transform_module(
     elif all(
         map(lambda p: not isinstance(p[1], og_dspy.retry.Retry), module.named_predictors()),
     ):
-        module.map_named_predictors(dspy.retry.Retry)
+        module.map_named_predictors(og_dspy.retry.Retry)
     else:
         raise RuntimeError("Module has mixed predictors, can't apply Retry mapping.")
 

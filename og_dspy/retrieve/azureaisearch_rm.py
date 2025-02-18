@@ -29,7 +29,7 @@ except ImportError:
     )
 
 
-class AzureAISearchRM(dspy.Retrieve):
+class AzureAISearchRM(og_dspy.Retrieve):
 
     """
     A retrieval module that utilizes Azure AI Search to retrieve top passages for a given query.

@@ -229,7 +229,7 @@ class Synthesizer:
                     for key in output_keys
                 }
 
-                data.append(dspy.Example(**kwargs, **output_kwargs).with_inputs(*input_keys))
+                data.append(og_dspy.Example(**kwargs, **output_kwargs).with_inputs(*input_keys))
 
             if self.config.feedback_mode and idx < self.config.num_example_for_feedback:
                 feedback = self._gather_feedback(data[-1])

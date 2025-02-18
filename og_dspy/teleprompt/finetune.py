@@ -104,7 +104,7 @@ class BootstrapFinetune(Teleprompter):
                     # TODO: FIXME: generalize.
                     template = signature_to_template(predictor.signature)
                     completion = demo.pop(template.fields[-1].output_variable)
-                    prompt = template.query(dsp.Example(demos=[], **demo)).strip()
+                    prompt = template.query(og_dsp.Example(demos=[], **demo)).strip()
 
                     finetune_data[name_].append(dict(prompt=prompt, completion=completion))
 

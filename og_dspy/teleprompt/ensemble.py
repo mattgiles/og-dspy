@@ -23,7 +23,7 @@ class Ensemble(Teleprompter):
 
         import og_dspy
 
-        class EnsembledProgram(dspy.Module):
+        class EnsembledProgram(og_dspy.Module):
             def __init__(self):
                 super().__init__()
                 self.programs = programs

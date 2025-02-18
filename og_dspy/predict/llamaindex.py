@@ -135,7 +135,7 @@ class DSPyPromptTemplate(BasePromptTemplate):
 
 
 # copied from langchain.py
-class Template2Signature(dspy.Signature):
+class Template2Signature(og_dspy.Signature):
     """You are a processor for prompts. I will give you a prompt template (Python f-string) for an arbitrary task for other LMs.
 Your job is to prepare three modular pieces: (i) any essential task instructions or guidelines, (ii) a list of variable names for inputs, (iv) the variable name for output."""
 
@@ -236,7 +236,7 @@ class DSPyComponent(QueryComponent):
         return OutputKeys.from_keys(output_keys)
 
 
-class LlamaIndexModule(dspy.Module):
+class LlamaIndexModule(og_dspy.Module):
     """A module for LlamaIndex.
 
     Wraps a QueryPipeline and exposes it as a dspy module for optimization.

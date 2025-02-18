@@ -13,7 +13,7 @@ except ImportError as e:
     ) from e
 
 
-class QdrantRM(dspy.Retrieve):
+class QdrantRM(og_dspy.Retrieve):
     """A retrieval module that uses Qdrant to return the top passages for a given query.
 
     Args:

@@ -3,7 +3,7 @@ import og_dspy
 from og_dspy.signatures import Signature
 
 
-class BasicGenerateInstruction(dspy.Signature):
+class BasicGenerateInstruction(og_dspy.Signature):
         ("""You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Specifically, I will provide you with one or more ``example instruction(s)`` that were previously attempted for this task.
 
 Your task is to propose a new improved instruction and prefix for the output field that will lead a good language model to perform the task well. Don't be afraid to be creative.""")
@@ -11,7 +11,7 @@ Your task is to propose a new improved instruction and prefix for the output fie
         proposed_instruction = og_dspy.InputField(desc="The improved instructions for the language model")
         proposed_prefix_for_output_field = og_dspy.OutputField(desc="The string at the end of the prompt, which will help the model start solving the task")
 
-class BasicGenerateInstructionWithExamplesAndDataObservationsAndTip(dspy.Signature):
+class BasicGenerateInstructionWithExamplesAndDataObservationsAndTip(og_dspy.Signature):
         ("""You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Specifically, I will give you a summary I have made about the dataset, along with some ``examples`` of the expected inputs and outputs for this task. I will also provide you with one or more ``example instruction(s)`` that were previously attempted for this task.
 
 Your task is to propose a new improved instruction and prefix for the output field that will lead a good language model to perform the task well. Don't be afraid to be creative.""")
@@ -22,7 +22,7 @@ Your task is to propose a new improved instruction and prefix for the output fie
         proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
         proposed_prefix_for_output_field = og_dspy.OutputField(desc="The string at the end of the prompt, which will help the model start solving the task")
 
-class BasicGenerateInstructionWithDataObservationsAndTip(dspy.Signature):
+class BasicGenerateInstructionWithDataObservationsAndTip(og_dspy.Signature):
         ("""You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Specifically, I will give you a summary I have made about the dataset, along with some ``examples`` of the expected inputs and outputs for this task. I will also provide you with one or more ``example instruction(s)`` that were previously attempted for this task.
 
 Your task is to propose a new improved instruction and prefix for the output field that will lead a good language model to perform the task well. Don't be afraid to be creative.""")
@@ -32,7 +32,7 @@ Your task is to propose a new improved instruction and prefix for the output fie
         proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
         proposed_prefix_for_output_field = og_dspy.OutputField(desc="The string at the end of the prompt, which will help the model start solving the task")
 
-class BasicGenerateInstructionWithExamplesAndTip(dspy.Signature):
+class BasicGenerateInstructionWithExamplesAndTip(og_dspy.Signature):
         ("""You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Specifically, I will give you some ``examples`` of the expected inputs and outputs for this task. I will also provide you with one or more ``example instruction(s)`` that were previously attempted for this task.
 
 Your task is to propose a new improved instruction and prefix for the output field that will lead a good language model to perform the task well. Don't be afraid to be creative.""")
@@ -42,7 +42,7 @@ Your task is to propose a new improved instruction and prefix for the output fie
         proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
         proposed_prefix_for_output_field = og_dspy.OutputField(desc="The string at the end of the prompt, which will help the model start solving the task")
 
-class BasicGenerateInstructionWithTip(dspy.Signature):
+class BasicGenerateInstructionWithTip(og_dspy.Signature):
         ("""You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Specifically, I will provide you with one or more ``example instruction(s)`` that were previously attempted for this task.
 
 Your task is to propose a new improved instruction and prefix for the output field that will lead a good language model to perform the task well. Don't be afraid to be creative.""")
@@ -52,7 +52,7 @@ Your task is to propose a new improved instruction and prefix for the output fie
         proposed_prefix_for_output_field = og_dspy.OutputField(desc="The string at the end of the prompt, which will help the model start solving the task")
 
 
-class BasicGenerateInstructionWithExamplesAndDataObservations(dspy.Signature):
+class BasicGenerateInstructionWithExamplesAndDataObservations(og_dspy.Signature):
         ("""You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Specifically, I will give you some ``observations`` I have made about the dataset and task, along with some ``examples`` of the expected inputs and outputs. I will also provide you with the current ``basic instruction`` that is being used for this task.
 
 Your task is to propose a new improved instruction and prefix for the output field that will lead a good language model to perform the task well. Don't be afraid to be creative.""")
@@ -62,7 +62,7 @@ Your task is to propose a new improved instruction and prefix for the output fie
         proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
         proposed_prefix_for_output_field = og_dspy.OutputField(desc="The string at the end of the prompt, which will help the model start solving the task")
 
-class BasicGenerateInstructionWithExamples(dspy.Signature):
+class BasicGenerateInstructionWithExamples(og_dspy.Signature):
         ("""You are an instruction optimizer for large language models. I will also give you one or more ``examples`` of the expected inputs and outputs.
 
 Your task is to propose an instruction that will lead a good language model to perform the task well. Don't be afraid to be creative.""")
@@ -116,7 +116,7 @@ class BasicGenerateField(Signature):
     proposed_field = og_dspy.OutputField(desc="The proposed string for the field (respond with the new field string only).")
     # proposed_prefix_for_output_field = og_dspy.OutputField(desc="The string at the end of the prompt, which will help the model start solving the task")
 
-class GenerateInstructionGivenAttempts(dspy.Signature):
+class GenerateInstructionGivenAttempts(og_dspy.Signature):
         """You are an instruction optimizer for large language models. I will give some task instructions I've tried, along with the corresponding validation scores, where higher scores indicate better quality. I will also include an example of each instruction in use on a randomly chosen sample from our validation set.
 
 Your task is to propose a new instruction that will lead a good language model to perform the task even better. Don't be afraid to be creative."""

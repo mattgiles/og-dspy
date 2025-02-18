@@ -54,7 +54,7 @@ class Template(BaseTemplate):
 
     def guidelines(self, show_guidelines=True) -> str:
         """Returns the task guidelines as described in the lm prompt"""
-        if (not show_guidelines) or (hasattr(dsp.settings, "show_guidelines") and not og_dsp.settings.show_guidelines):
+        if (not show_guidelines) or (hasattr(og_dsp.settings, "show_guidelines") and not og_dsp.settings.show_guidelines):
             return ""
 
         result = "Follow the following format.\n\n"
@@ -138,7 +138,7 @@ class Template(BaseTemplate):
     def __call__(self, example, show_guidelines=True) -> str:
         example = og_dsp.Example(example)
 
-        if hasattr(dsp.settings, "query_only") and og_dsp.settings.query_only:
+        if hasattr(og_dsp.settings, "query_only") and og_dsp.settings.query_only:
             return self.query(example)
 
         # The training data should not contain the output variable

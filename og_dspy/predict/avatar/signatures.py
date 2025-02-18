@@ -2,7 +2,7 @@ import og_dspy
 from og_dspy.predict.avatar.models import Action
 
 
-class Actor(dspy.Signature):
+class Actor(og_dspy.Signature):
     """You will be given `Tools` which will be a list of tools to use to accomplish the `Goal`. Given the user query, your task is to decide which tool to use and what input values to provide.
 
 You will output action needed to accomplish the `Goal`. `Action` should have a tool to use and the input query to pass to the tool.

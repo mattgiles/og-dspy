@@ -4,12 +4,12 @@ import og_dspy
 from og_dspy.propose.utils import strip_prefix
 
 
-class ObservationSummarizer(dspy.Signature):
+class ObservationSummarizer(og_dspy.Signature):
     ("""Given a series of observations I have made about my dataset, please summarize them into a brief 2-3 sentence summary which highlights only the most important details.""")
     observations = og_dspy.InputField(desc="Observations I have made about my dataset")
     summary = og_dspy.OutputField(desc="Two to Three sentence summary of only the most significant highlights of my observations")
 
-class DatasetDescriptor(dspy.Signature):
+class DatasetDescriptor(og_dspy.Signature):
     ("""Given several examples from a dataset please write observations about trends that hold for most or all of the samples. """
     """Some areas you may consider in your observations: topics, content, syntax, conciceness, etc. """
     """It will be useful to make an educated guess as to the nature of the task this dataset will enable. Don't be afraid to be creative""")
@@ -17,7 +17,7 @@ class DatasetDescriptor(dspy.Signature):
     examples = og_dspy.InputField(desc="Sample data points from the dataset")
     observations = og_dspy.OutputField(desc="Somethings that holds true for most or all of the data you observed")
 
-class DatasetDescriptorWithPriorObservations(dspy.Signature):
+class DatasetDescriptorWithPriorObservations(og_dspy.Signature):
     ("""Given several examples from a dataset please write observations about trends that hold for most or all of the samples. """
     """I will also provide you with a few observations I have already made.  Please add your own observations or if you feel the observations are comprehensive say 'COMPLETE' """
     """Some areas you may consider in your observations: topics, content, syntax, conciceness, etc. """

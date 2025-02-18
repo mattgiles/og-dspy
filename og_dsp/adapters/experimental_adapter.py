@@ -46,7 +46,7 @@ class ExperimentalAdapter(BaseTemplate):
 
     def guidelines(self, show_guidelines=True) -> str:
         """Returns the task guidelines as described in the lm prompt"""
-        if (not show_guidelines) or (hasattr(dsp.settings, "show_guidelines") and not og_dsp.settings.show_guidelines):
+        if (not show_guidelines) or (hasattr(og_dsp.settings, "show_guidelines") and not og_dsp.settings.show_guidelines):
             return ""
 
         result = "Follow the following format.\n\n"
@@ -154,7 +154,7 @@ class ExperimentalAdapter(BaseTemplate):
                 if output_field not in output_fields:
                     output_fields.append(self.fields[i].name.split(':')[0])
 
-        if hasattr(dsp.settings, "query_only") and og_dsp.settings.query_only:
+        if hasattr(og_dsp.settings, "query_only") and og_dsp.settings.query_only:
             return self.query(example)
 
         # The training data should not contain the output variable

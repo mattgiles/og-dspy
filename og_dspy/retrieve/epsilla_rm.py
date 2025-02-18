@@ -12,7 +12,7 @@ except ImportError:
     )
 
 
-class EpsillaRM(dspy.Retrieve):
+class EpsillaRM(og_dspy.Retrieve):
     def __init__(
         self,
         epsilla_client: vectordb.Client,

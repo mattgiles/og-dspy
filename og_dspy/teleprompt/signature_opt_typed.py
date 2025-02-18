@@ -103,7 +103,7 @@ def make_initial_signature(n_prompts: int) -> type[Signature]:
 
 
 def generate_with_avoidance(signatures_to_avoid: list[BaseModel]) -> type[Signature]:
-    class GenerateSignature(dspy.Signature, Generic[T]):
+    class GenerateSignature(og_dspy.Signature, Generic[T]):
         __doc__ = textwrap.dedent(
             """\
         You are an instruction optimizer for large language models.

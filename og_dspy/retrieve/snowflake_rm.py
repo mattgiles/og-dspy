@@ -15,7 +15,7 @@ except ImportError:
     )
 
 
-class SnowflakeRM(dspy.Retrieve):
+class SnowflakeRM(og_dspy.Retrieve):
     """A retrieval module that uses Weaviate to return the top passages for a given query.
 
     Assumes that a Snowflake table has been created and populated with the following payload:

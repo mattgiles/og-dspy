@@ -20,7 +20,7 @@ except ImportError:
     )
 
 
-class PgVectorRM(dspy.Retrieve):
+class PgVectorRM(og_dspy.Retrieve):
     """
     Implements a retriever that (as the name suggests) uses pgvector to retrieve passages,
     using a raw SQL query and a postgresql connection managed by psycopg2.
@@ -139,7 +139,7 @@ class PgVectorRM(dspy.Retrieve):
                 for row in rows:
                     data = dict(zip(columns, row))
                     data["long_text"] = data[self.content_field]
-                    retrieved_docs.append(dspy.Example(**data))
+                    retrieved_docs.append(og_dspy.Example(**data))
         # Return Prediction
         return retrieved_docs
 

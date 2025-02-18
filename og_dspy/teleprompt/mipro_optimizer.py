@@ -68,7 +68,7 @@ class BasicGenerateInstructionWithDataObservations(Signature):
     )
 
 
-class BasicGenerateInstructionWithExamples(dspy.Signature):
+class BasicGenerateInstructionWithExamples(og_dspy.Signature):
     """You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Specifically, I will also provide you with the current ``basic instruction`` that is being used for this task. I will also provide you with some ``examples`` of the expected inputs and outputs.
 
     Your task is to propose an instruction that will lead a good language model to perform the task well. Don't be afraid to be creative."""
@@ -83,7 +83,7 @@ class BasicGenerateInstructionWithExamples(dspy.Signature):
     )
 
 
-class BasicGenerateInstructionWithExamplesAndDataObservations(dspy.Signature):
+class BasicGenerateInstructionWithExamplesAndDataObservations(og_dspy.Signature):
     """You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Specifically, I will give you some ``observations`` I have made about the dataset and task, along with some ``examples`` of the expected inputs and outputs. I will also provide you with the current ``basic instruction`` that is being used for this task.
 
     Your task is to propose a new improved instruction and prefix for the output field that will lead a good language model to perform the task well. Don't be afraid to be creative."""
@@ -97,7 +97,7 @@ class BasicGenerateInstructionWithExamplesAndDataObservations(dspy.Signature):
     )
 
 
-class ObservationSummarizer(dspy.Signature):
+class ObservationSummarizer(og_dspy.Signature):
     """Given a series of observations I have made about my dataset, please summarize them into a brief 2-3 sentence summary which highlights only the most important details."""
 
     observations = og_dspy.InputField(desc="Observations I have made about my dataset")
@@ -106,7 +106,7 @@ class ObservationSummarizer(dspy.Signature):
     )
 
 
-class DatasetDescriptor(dspy.Signature):
+class DatasetDescriptor(og_dspy.Signature):
     (
         """Given several examples from a dataset please write observations about trends that hold for most or all of the samples. """
         """Some areas you may consider in your observations: topics, content, syntax, conciceness, etc. """
@@ -117,7 +117,7 @@ class DatasetDescriptor(dspy.Signature):
     observations = og_dspy.OutputField(desc="Somethings that holds true for most or all of the data you observed")
 
 
-class DatasetDescriptorWithPriorObservations(dspy.Signature):
+class DatasetDescriptorWithPriorObservations(og_dspy.Signature):
     (
         """Given several examples from a dataset please write observations about trends that hold for most or all of the samples. """
         """I will also provide you with a few observations I have already made.  Please add your own observations or if you feel the observations are comprehensive say 'COMPLETE' """

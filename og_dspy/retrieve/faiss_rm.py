@@ -23,7 +23,7 @@ if faiss is None:
     )
 
 
-class FaissRM(dspy.Retrieve):
+class FaissRM(og_dspy.Retrieve):
     """A retrieval module that uses an in-memory Faiss to return the top passages for a given query.
 
     Args:

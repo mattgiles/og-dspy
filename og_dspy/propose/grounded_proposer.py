@@ -22,7 +22,7 @@ TIPS = {
 
 ### SIGNATURES USED TO HELP WITH INSTRUCTION GENERATION ###
 
-class DescribeProgram(dspy.Signature):
+class DescribeProgram(og_dspy.Signature):
     (
         """Below is some pseudo-code for a pipeline that solves tasks with calls to language models. Please describe what type of task this program appears to be designed to solve, and how it appears to work."""
     )
@@ -42,7 +42,7 @@ class DescribeProgram(dspy.Signature):
     )
 
 
-class DescribeModule(dspy.Signature):
+class DescribeModule(og_dspy.Signature):
     (
         """Below is some pseudo-code for a pipeline that solves tasks with calls to language models. Please describe the purpose of one of the specified module in this pipeline."""
     )
@@ -76,7 +76,7 @@ def generate_instruction_class(
     use_instruct_history=True,
     use_tip=True,
 ):
-    class GenerateSingleModuleInstruction(dspy.Signature):
+    class GenerateSingleModuleInstruction(og_dspy.Signature):
         (
             """Use the information below to learn about a task that we are trying to solve using calls to an LM, then generate a new instruction that will be used to prompt a Language Model to better solve the task."""
         )
@@ -127,7 +127,7 @@ def generate_instruction_class(
 
 ### CLASS RESPONSIBLE FOR GENERATING A NEW INSTRUCTION, USING THE HELPER SIGNATURES ABOVE ###
 
-class GenerateModuleInstruction(dspy.Module):
+class GenerateModuleInstruction(og_dspy.Module):
     def __init__(
         self,
         program_code_string=None,

@@ -53,7 +53,7 @@ class ReAct(Module):
 
         instr = "\n".join(instr)
         self.react = [
-            Predict(dspy.Signature(self._generate_signature(i), instr))
+            Predict(og_dspy.Signature(self._generate_signature(i), instr))
             for i in range(1, max_iters + 1)
         ]
 

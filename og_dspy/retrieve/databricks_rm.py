@@ -6,7 +6,7 @@ import og_dspy
 from og_dspy.primitives.prediction import Prediction
 
 
-class DatabricksRM(dspy.Retrieve):
+class DatabricksRM(og_dspy.Retrieve):
     """
     A retrieval module that uses Databricks Vector Search Endpoint to return the top-k embeddings for a given query.
 

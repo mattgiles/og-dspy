@@ -12,14 +12,14 @@ except ImportError:
 NO_TOP_K_WARNING = "The underlying LlamaIndex retriever does not support top k retrieval. Ignoring k value."
 
 
-class LlamaIndexRM(dspy.Retrieve):
+class LlamaIndexRM(og_dspy.Retrieve):
     """Implements a retriever which wraps over a LlamaIndex retriever.
 
     This is done to bridge LlamaIndex and DSPy and allow the various retrieval
     abstractions in LlamaIndex to be used in og_dspy.
 
     To-do (maybe):
-        - Async support (DSPy lacks this entirely it seems, so not a priority until the rest of the repo catches on)
+        - Async support (og_dspy lacks this entirely it seems, so not a priority until the rest of the repo catches on)
         - Text/video retrieval (Available in LI, not sure if this will be a priority in DSPy)
 
     Args:

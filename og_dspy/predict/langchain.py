@@ -15,7 +15,7 @@ from og_dspy.signatures.signature import infer_prefix
 # TODO: This class is currently hard to test, because it hardcodes gpt-4 usage:
 # gpt4T = og_dspy.OpenAI(model='gpt-4-1106-preview', max_tokens=4000, model_type='chat')
 
-class Template2Signature(dspy.Signature):
+class Template2Signature(og_dspy.Signature):
     """You are a processor for prompts. I will give you a prompt template (Python f-string) for an arbitrary task for other LMs.
 Your job is to prepare three modular pieces: (i) any essential task instructions or guidelines, (ii) a list of variable names for inputs, (iv) the variable name for output."""
 
@@ -95,7 +95,7 @@ class LangChainPredict(Predict, Runnable, metaclass=LangChainPredictMetaClass):
         demos = kwargs.pop("demos", self.demos)
         config = dict(**self.config, **kwargs.pop("config", {}))
 
-        prompt = signature(dsp.Example(demos=demos, **kwargs))
+        prompt = signature(og_dsp.Example(demos=demos, **kwargs))
         output = self.langchain_llm.invoke(prompt, **config)
 
         try: content = output.content
@@ -140,7 +140,7 @@ class LangChainPredict(Predict, Runnable, metaclass=LangChainPredictMetaClass):
 #         return super().forward(signature=signature, **kwargs)
 
 
-class LangChainModule(dspy.Module):
+class LangChainModule(og_dspy.Module):
     def __init__(self, lcel):
         super().__init__()
 

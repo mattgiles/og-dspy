@@ -44,9 +44,9 @@ class Completions:
 
 def generate(template: Template, **kwargs) -> Callable:
     """Returns a callable function that generates completions for a given example using the provided template."""
-    if hasattr(dsp.settings, "inspect"):
+    if hasattr(og_dsp.settings, "inspect"):
         inspector = og_dsp.settings.inspect
-        _generate = inspector.inspect_func(dsp.predict._generate)
+        _generate = inspector.inspect_func(og_dsp.predict._generate)
         return _generate(template, **kwargs)
     else:
         return og_dsp.predict._generate(template, **kwargs)

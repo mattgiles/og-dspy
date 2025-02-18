@@ -11,7 +11,7 @@ except ImportError:
     )
 
 
-class RAGatouilleRM(dspy.Retrieve):
+class RAGatouilleRM(og_dspy.Retrieve):
     """A retrieval model that uses RAGatouille library to return the top passages for a given query.
 
     Assumes that you already have an index created with RAGatouille.

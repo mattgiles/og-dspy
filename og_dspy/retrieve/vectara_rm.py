@@ -14,7 +14,7 @@ END_SNIPPET = "<%END%>"
 def remove_snippet(s: str) -> str:
     return s.replace(START_SNIPPET, "").replace(END_SNIPPET, "")
 
-class VectaraRM(dspy.Retrieve):
+class VectaraRM(og_dspy.Retrieve):
     """
     A retrieval module that uses Vectara to return the top passages for a given query.
 

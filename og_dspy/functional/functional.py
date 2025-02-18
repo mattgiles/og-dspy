@@ -41,7 +41,7 @@ def cot(*args: tuple, **kwargs) -> Callable[..., og_dspy.Module]:
     return _cot
 
 
-class _StripOutput(dspy.Module):
+class _StripOutput(og_dspy.Module):
     def __init__(self, predictor, output_key):
         super().__init__()
         self.predictor = predictor
@@ -55,7 +55,7 @@ class _StripOutput(dspy.Module):
         return prediction[self.output_key]
 
 
-class FunctionalModule(dspy.Module):
+class FunctionalModule(og_dspy.Module):
     """To use the @cot and @predictor decorators, your module needs to inheret form this class."""
 
     def __init__(self):
@@ -86,7 +86,7 @@ def TypedChainOfThought(signature, instructions=None, reasoning=None, *, max_ret
     )
 
 
-class TypedPredictor(dspy.Module):
+class TypedPredictor(og_dspy.Module):
     def __init__(self, signature, instructions=None, *, max_retries=3, wrap_json=False, explain_errors=False):
         """Like og_dspy.Predict, but enforces type annotations in the signature.
 
@@ -172,7 +172,7 @@ class TypedPredictor(dspy.Module):
         return error_text
 
     def _make_explanation(self, task_description: str, model_output: str, error: str) -> str:
-        class Signature(dspy.Signature):
+        class Signature(og_dspy.Signature):
             """I gave my language model a task, but it failed.
 
             Figure out what went wrong, and write instructions to help it avoid the error next time.

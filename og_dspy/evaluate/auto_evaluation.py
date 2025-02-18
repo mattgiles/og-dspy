@@ -1,7 +1,7 @@
 import og_dspy
 
 
-class AnswerCorrectnessSignature(dspy.Signature):
+class AnswerCorrectnessSignature(og_dspy.Signature):
     """Verify that the predicted answer matches the gold answer."""
 
     question = og_dspy.InputField()
@@ -9,7 +9,7 @@ class AnswerCorrectnessSignature(dspy.Signature):
     predicted_answer = og_dspy.InputField(desc="predicted answer for question")
     is_correct = og_dspy.OutputField(desc='True or False')
 
-class AnswerCorrectness(dspy.Module):
+class AnswerCorrectness(og_dspy.Module):
     def __init__(self):
         super().__init__()
         self.evaluate_correctness = og_dspy.ChainOfThought(AnswerCorrectnessSignature)
@@ -18,7 +18,7 @@ class AnswerCorrectness(dspy.Module):
         return self.evaluate_correctness(question=question, gold_answer=gold_answer, predicted_answer=predicted_answer)
 
 
-class AnswerFaithfulnessSignature(dspy.Signature):
+class AnswerFaithfulnessSignature(og_dspy.Signature):
     """Verify that the predicted answer is based on the provided context."""
 
     context = og_dspy.InputField(desc="relevant facts for producing answer")
@@ -26,7 +26,7 @@ class AnswerFaithfulnessSignature(dspy.Signature):
     answer = og_dspy.InputField(desc="often between 1 and 5 words")
     is_faithful = og_dspy.OutputField(desc='True or False')
 
-class AnswerFaithfulness(dspy.Module):
+class AnswerFaithfulness(og_dspy.Module):
     def __init__(self):
         super().__init__()
         self.evaluate_faithfulness = og_dspy.ChainOfThought(AnswerFaithfulnessSignature)

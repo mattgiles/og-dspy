@@ -157,7 +157,7 @@ class Evaluate:
             thread_stacks = og_dspy.settings.stack_by_thread
             creating_new_thread = threading.get_ident() not in thread_stacks
             if creating_new_thread:
-                thread_stacks[threading.get_ident()] = list(dspy.settings.main_stack)
+                thread_stacks[threading.get_ident()] = list(og_dspy.settings.main_stack)
 
             try:
                 prediction = program(**example.inputs())

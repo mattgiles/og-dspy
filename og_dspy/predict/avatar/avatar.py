@@ -19,7 +19,7 @@ def get_number_with_suffix(number: int) -> str:
         return f"{number}th"
 
 
-class Avatar(dspy.Module):
+class Avatar(og_dspy.Module):
     def __init__(
         self,
         signature,

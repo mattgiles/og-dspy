@@ -40,7 +40,7 @@ def retrievewithMetadata(query: str, k: int, **kwargs) -> list[str]:
 
 
 def retrieveRerankEnsemble(queries: list[str], k: int,**kwargs) -> list[str]:
-    if not (dsp.settings.rm and og_dsp.settings.reranker):
+    if not (og_dsp.settings.rm and og_dsp.settings.reranker):
         raise AssertionError("Both RM and Reranker are needed to retrieve & re-rank.")
     queries = [q for q in queries if q]
     passages = {}
@@ -58,7 +58,7 @@ def retrieveRerankEnsemble(queries: list[str], k: int,**kwargs) -> list[str]:
     return [text for _, text in sorted(passages, reverse=True)[:k]]
 
 def retrieveRerankEnsemblewithMetadata(queries: list[str], k: int, **kwargs) -> list[str]:
-    if not (dsp.settings.rm and og_dsp.settings.reranker):
+    if not (og_dsp.settings.rm and og_dsp.settings.reranker):
         raise AssertionError("Both RM and Reranker are needed to retrieve & re-rank.")
     queries = [q for q in queries if q]
     all_queries_passages = []

@@ -21,7 +21,7 @@ except Exception:
     ERRORS = (openai.RateLimitError, openai.APIError)
 
 
-class DeeplakeRM(dspy.Retrieve):
+class DeeplakeRM(og_dspy.Retrieve):
 
     """
     A retriever module that uses deeplake to return the top passages for a given query.

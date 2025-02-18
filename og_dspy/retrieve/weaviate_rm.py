@@ -12,7 +12,7 @@ except ImportError as err:
     ) from err
 
 
-class WeaviateRM(dspy.Retrieve):
+class WeaviateRM(og_dspy.Retrieve):
     """A retrieval module that uses Weaviate to return the top passages for a given query.
 
     Assumes that a Weaviate collection has been created and populated with the following payload:

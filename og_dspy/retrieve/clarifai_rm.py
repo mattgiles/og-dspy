@@ -16,7 +16,7 @@ except ImportError as err:
     ) from err
 
 
-class ClarifaiRM(dspy.Retrieve):
+class ClarifaiRM(og_dspy.Retrieve):
     """
     Retrieval module uses clarifai to return the Top K relevant pasages for the given query.
     Assuming that you have ingested the source documents into clarifai App, where it is indexed and stored.
