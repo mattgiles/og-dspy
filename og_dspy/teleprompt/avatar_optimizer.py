@@ -148,7 +148,7 @@ class AvatarOptimizer(Teleprompter):
     def _get_pos_neg_results(
         self,
         actor: og_dspy.Module,
-        trainset: List[dspy.Example]
+        trainset: List[og_dspy.Example]
     ) -> Tuple[float, List[EvalResult], List[EvalResult]]:
         pos_inputs = []
         neg_inputs = []

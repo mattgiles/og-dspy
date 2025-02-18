@@ -93,7 +93,7 @@ class Synthesizer:
         self,
         input_keys: Mapping[str, str],
         output_keys: Mapping[str, str],
-        ground_source: Optional[Union[List[dspy.Example], og_dspy.Signature]] = None,
+        ground_source: Optional[Union[List[og_dspy.Example], og_dspy.Signature]] = None,
     ):
         for key in tqdm(input_keys, desc="Preparing Input Fields"):
             field_name, field_description = self._get_field_data(key, input_keys)
@@ -144,7 +144,7 @@ class Synthesizer:
 
         return og_dspy.ChainOfThought(self.generate_input_data), og_dspy.Predict(self.generate_output_data)
 
-    def _get_dataset_metadata(self, ground_source: Union[List[dspy.Example], og_dspy.Signature]):
+    def _get_dataset_metadata(self, ground_source: Union[List[og_dspy.Example], og_dspy.Signature]):
         if isinstance(ground_source, og_dspy.SignatureMeta):
             task_description = ground_source.__doc__
             if task_description.startswith("Given the fields"):
@@ -167,7 +167,7 @@ class Synthesizer:
 
     def generate(
         self,
-        ground_source: Union[List[dspy.Example], og_dspy.Signature],
+        ground_source: Union[List[og_dspy.Example], og_dspy.Signature],
         num_data: int,
         batch_size: int = 1,
     ):
@@ -243,7 +243,7 @@ class Synthesizer:
 
         return data
 
-    def export(self, data: List[dspy.Example], path: str, mode: str = None, **kwargs):
+    def export(self, data: List[og_dspy.Example], path: str, mode: str = None, **kwargs):
         extention = mode or path.split(".")[-1]
 
         dataset = Dataset.from_list(

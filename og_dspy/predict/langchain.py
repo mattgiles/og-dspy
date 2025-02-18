@@ -66,7 +66,7 @@ class LangChainPredict(Predict, Runnable, metaclass=LangChainPredictMetaClass):
         for name, value in state.items():
             setattr(self, name, value)
 
-        self.demos = [dspy.Example(**x) for x in self.demos]
+        self.demos = [og_dspy.Example(**x) for x in self.demos]
 
     def __call__(self, *arg, **kwargs):
         if len(arg) > 0: kwargs = {**arg[0], **kwargs}

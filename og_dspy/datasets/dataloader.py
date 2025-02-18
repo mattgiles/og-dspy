@@ -22,7 +22,7 @@ class DataLoader(Dataset):
         input_keys: Tuple[str] = (),
         fields: Tuple[str] = None,
         **kwargs,
-    ) -> Union[Mapping[str, List[dspy.Example]], List[dspy.Example]]:
+    ) -> Union[Mapping[str, List[og_dspy.Example]], List[og_dspy.Example]]:
         if fields and not isinstance(fields, tuple):
             raise ValueError("Invalid fields provided. Please provide a tuple of fields.")
 
@@ -60,20 +60,20 @@ class DataLoader(Dataset):
                     for row in dataset
                 ]
 
-    def from_csv(self, file_path: str, fields: List[str] = None, input_keys: Tuple[str] = ()) -> List[dspy.Example]:
+    def from_csv(self, file_path: str, fields: List[str] = None, input_keys: Tuple[str] = ()) -> List[og_dspy.Example]:
         dataset = load_dataset("csv", data_files=file_path)["train"]
 
         if not fields:
             fields = list(dataset.features)
 
-        return [dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for row in dataset]
+        return [og_dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for row in dataset]
 
     def from_pandas(
         self,
         df: pd.DataFrame,
         fields: list[str] = None,
         input_keys: tuple[str] = (),
-    ) -> list[dspy.Example]:
+    ) -> list[og_dspy.Example]:
         if fields is None:
             fields = list(df.columns)
 
@@ -81,29 +81,29 @@ class DataLoader(Dataset):
             og_dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for _, row in df.iterrows()
         ]
 
-    def from_json(self, file_path: str, fields: List[str] = None, input_keys: Tuple[str] = ()) -> List[dspy.Example]:
+    def from_json(self, file_path: str, fields: List[str] = None, input_keys: Tuple[str] = ()) -> List[og_dspy.Example]:
         dataset = load_dataset("json", data_files=file_path)["train"]
 
         if not fields:
             fields = list(dataset.features)
 
-        return [dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for row in dataset]
+        return [og_dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for row in dataset]
 
-    def from_parquet(self, file_path: str, fields: List[str] = None, input_keys: Tuple[str] = ()) -> List[dspy.Example]:
+    def from_parquet(self, file_path: str, fields: List[str] = None, input_keys: Tuple[str] = ()) -> List[og_dspy.Example]:
         dataset = load_dataset("parquet", data_files=file_path)["train"]
 
         if not fields:
             fields = list(dataset.features)
 
-        return [dspy.Example({field: row[field] for field in fields}).with_inputs(input_keys) for row in dataset]
+        return [og_dspy.Example({field: row[field] for field in fields}).with_inputs(input_keys) for row in dataset]
 
     def sample(
         self,
-        dataset: List[dspy.Example],
+        dataset: List[og_dspy.Example],
         n: int,
         *args,
         **kwargs,
-    ) -> List[dspy.Example]:
+    ) -> List[og_dspy.Example]:
         if not isinstance(dataset, list):
             raise ValueError(f"Invalid dataset provided of type {type(dataset)}. Please provide a list of examples.")
 
@@ -111,11 +111,11 @@ class DataLoader(Dataset):
 
     def train_test_split(
         self,
-        dataset: List[dspy.Example],
+        dataset: List[og_dspy.Example],
         train_size: Union[int, float] = 0.75,
         test_size: Union[int, float] = None,
         random_state: int = None,
-    ) -> Mapping[str, List[dspy.Example]]:
+    ) -> Mapping[str, List[og_dspy.Example]]:
         if random_state is not None:
             random.seed(random_state)
 

@@ -3,7 +3,7 @@ from typing import List
 import og_dspy
 
 
-def format_examples(examples: List[dspy.Example]) -> str:
+def format_examples(examples: List[og_dspy.Example]) -> str:
     if isinstance(examples, str):
         return examples
 

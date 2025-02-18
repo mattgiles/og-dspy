@@ -350,7 +350,7 @@ class MIPRO(Teleprompter):
         self,
         student: og_dspy.Program,
         *,
-        trainset: list[dspy.Example],
+        trainset: list[og_dspy.Example],
         num_trials: int,
         max_bootstrapped_demos: int,
         max_labeled_demos: int,

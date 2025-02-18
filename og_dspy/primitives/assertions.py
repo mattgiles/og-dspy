@@ -199,7 +199,7 @@ def backtrack_handler(func, bypass_suggest=True, max_backtracks=2):
                 if i > 0 and og_dspy.settings.backtrack_to is not None:
                     # generate values for new fields
                     feedback_msg = _build_error_msg(
-                        og_dspy.settings.predictor_feedbacks[dspy.settings.backtrack_to],
+                        og_dspy.settings.predictor_feedbacks[og_dspy.settings.backtrack_to],
                     )
 
                     og_dspy.settings.backtrack_to_args = {
@@ -255,7 +255,7 @@ def backtrack_handler(func, bypass_suggest=True, max_backtracks=2):
                                 og_dspy.settings.backtrack_to,
                                 [],
                             ):
-                                og_dspy.settings.predictor_feedbacks[dspy.settings.backtrack_to].append(error_msg)
+                                og_dspy.settings.predictor_feedbacks[og_dspy.settings.backtrack_to].append(error_msg)
 
                             output_fields = error_state[0].new_signature.output_fields
                             past_outputs = {}

@@ -14,11 +14,11 @@ class DescriptionSignature(dspy.Signature):
 
 
 class SyntheticDataGenerator:
-    def __init__(self, schema_class: Optional[BaseModel] = None, examples: Optional[List[dspy.Example]] = None):
+    def __init__(self, schema_class: Optional[BaseModel] = None, examples: Optional[List[og_dspy.Example]] = None):
         self.schema_class = schema_class
         self.examples = examples
 
-    def generate(self, sample_size: int) -> List[dspy.Example]:
+    def generate(self, sample_size: int) -> List[og_dspy.Example]:
         """Generate synthetic examples.
 
         Args:
@@ -26,7 +26,7 @@ class SyntheticDataGenerator:
         Raises:
             ValueError: either a schema_class or examples should be provided
         Returns:
-            List[dspy.Example]: list of synthetic examples generated
+            List[og_dspy.Example]: list of synthetic examples generated
         """
         if not self.schema_class and not self.examples:
             raise ValueError("Either a schema_class or examples must be provided.")
@@ -58,14 +58,14 @@ class SyntheticDataGenerator:
             properties = {}
         return properties
 
-    def _generate_additional_examples(self, additional_samples_needed: int) -> List[dspy.Example]:
+    def _generate_additional_examples(self, additional_samples_needed: int) -> List[og_dspy.Example]:
         """Generate additional examples if needed.
 
         Args:
             additional_samples_needed (int): the difference between the desired
             number of examples and the current number of examples
         Returns:
-            List[dspy.Example]: list of synthetic examples
+            List[og_dspy.Example]: list of synthetic examples
         """
         properties = self._define_or_infer_fields()
         class_name = f"{self.schema_class.__name__ if self.schema_class else 'Inferred'}Signature"
@@ -75,7 +75,7 @@ class SyntheticDataGenerator:
         generator = og_dspy.Predict(signature_class, n=additional_samples_needed)
         response = generator(sindex=str(random.randint(1, additional_samples_needed)))
 
-        return [dspy.Example({field_name: getattr(completion, field_name) for field_name in properties.keys()})
+        return [og_dspy.Example({field_name: getattr(completion, field_name) for field_name in properties.keys()})
                 for completion in response.completions]
 
     def _prepare_fields(self, properties) -> dict:

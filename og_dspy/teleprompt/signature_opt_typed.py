@@ -253,7 +253,7 @@ def optimize_signature(
             for name, _p in named_predictors:
                 SignatureInfo = type(candidates[name][0])  # noqa: N806
 
-                demos = [dspy.Example(proposed_signature=info, score=sc) for info, sc in zip(candidates[name], scores)]
+                demos = [og_dspy.Example(proposed_signature=info, score=sc) for info, sc in zip(candidates[name], scores)]
                 if sorted_order == "chronological":
                     demos = demos[-max_examples:]
                 elif sorted_order == "increasing":

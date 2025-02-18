@@ -61,7 +61,7 @@ class LlamaIndexRM(dspy.Retrieve):
         else:
             logging.warning(NO_TOP_K_WARNING)
 
-    def forward(self, query: str, k: Optional[int] = None) -> list[dspy.Example]:
+    def forward(self, query: str, k: Optional[int] = None) -> list[og_dspy.Example]:
         """Forward function for the LI retriever.
 
         This is the function that is called to retrieve the top k examples for a given query.
@@ -74,7 +74,7 @@ class LlamaIndexRM(dspy.Retrieve):
             If the underlying LI retriever does not have the property similarity_top_k, k will be ignored.
 
         Returns:
-            List[dspy.Example]: A list of examples retrieved by the retriever
+            List[og_dspy.Example]: A list of examples retrieved by the retriever
         """
         if k:
             self.k = k

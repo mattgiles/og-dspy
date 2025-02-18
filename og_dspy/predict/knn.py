@@ -6,7 +6,7 @@ import og_dsp
 
 
 class KNN:
-    def __init__(self, k: int, trainset: List[dsp.Example], vectorizer: Optional[dsp.BaseSentenceVectorizer] = None):
+    def __init__(self, k: int, trainset: List[og_dsp.Example], vectorizer: Optional[og_dsp.BaseSentenceVectorizer] = None):
         self.k = k
         self.trainset = trainset
         self.vectorizer = vectorizer or og_dsp.SentenceTransformersVectorizer()
@@ -16,7 +16,7 @@ class KNN:
         ]
         self.trainset_vectors = self.vectorizer(trainset_casted_to_vectorize).astype(np.float32)
 
-    def __call__(self, **kwargs) -> List[dsp.Example]:
+    def __call__(self, **kwargs) -> List[og_dsp.Example]:
         with og_dsp.settings.context(vectorizer=self.vectorizer):
             input_example_vector = self.vectorizer([" | ".join([f"{key}: {val}" for key, val in kwargs.items()])])
             scores = np.dot(self.trainset_vectors, input_example_vector.T).squeeze()

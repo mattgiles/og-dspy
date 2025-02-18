@@ -17,7 +17,7 @@ class ReAct(Module):
         self.signature = signature = ensure_signature(signature)
         self.max_iters = max_iters
 
-        self.tools = tools or [dspy.Retrieve(k=num_results)]
+        self.tools = tools or [og_dspy.Retrieve(k=num_results)]
         self.tools = {tool.name: tool for tool in self.tools}
 
         self.input_fields = self.signature.input_fields

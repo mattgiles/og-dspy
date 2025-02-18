@@ -50,9 +50,9 @@ class GSM8K:
 
         import og_dspy
 
-        trainset = [dspy.Example(**x).with_inputs('question') for x in trainset]
-        devset = [dspy.Example(**x).with_inputs('question') for x in devset]
-        testset = [dspy.Example(**x).with_inputs('question') for x in testset]
+        trainset = [og_dspy.Example(**x).with_inputs('question') for x in trainset]
+        devset = [og_dspy.Example(**x).with_inputs('question') for x in devset]
+        testset = [og_dspy.Example(**x).with_inputs('question') for x in testset]
 
         # print(f"Trainset size: {len(trainset)}")
         # print(f"Devset size: {len(devset)}")

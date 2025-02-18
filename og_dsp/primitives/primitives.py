@@ -15,7 +15,7 @@
 # def shallow_copy_example_args(func):
 #     @wraps(func)
 #     def wrapper(*args, **kwargs):
-#         args = [dsp.Example(arg) if isinstance(arg, og_dsp.Example) else arg for arg in args]
+#         args = [og_dsp.Example(arg) if isinstance(arg, og_dsp.Example) else arg for arg in args]
 #         kwargs = {key: og_dsp.Example(value) if isinstance(value, og_dsp.Example) else value for key, value in kwargs.items()}
 #         return func(*args, **kwargs)
 #     return wrapper
