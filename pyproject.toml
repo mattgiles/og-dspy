@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 #replace_package_name_marker
-name = "og-dspy"
+name = "og_dspy"
 #replace_package_version_marker
 version = "2.4.14"
 description = "DSPy"
@@ -73,7 +73,7 @@ fastembed = ["fastembed>=0.2.0"]
 homepage = "https://github.com/mattgiles/og-dspy"
 
 [tool.poetry]
-name = "og-dspy"
+name = "og_dspy"
 version = "2.0.8"
 description = "DSPy"
 authors = ["Omar Khattab <okhattab@stanford.edu>"]
