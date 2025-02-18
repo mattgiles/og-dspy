@@ -8,21 +8,21 @@ with open("README.md", encoding="utf-8") as f:
 with open("requirements.txt", encoding="utf-8") as f:
     requirements = f.read().splitlines()
 
-setup(	
+setup(
     #replace_package_name_marker
-    name="dspy-ai",
+    name="og-dspy",
     #replace_package_version_marker
-    version="2.4.14", 	
-    description="DSPy",	
-    long_description=long_description,	
-    long_description_content_type="text/markdown",	
-    url="https://github.com/stanfordnlp/dsp",	
-    author="Omar Khattab",	
-    author_email="okhattab@stanford.edu",	
-    license="MIT License",	
-    packages=find_packages(include=["dsp.*", "dspy.*", "dsp", "dspy"]),	
-    python_requires=">=3.9",	
-    install_requires=requirements,	
+    version="2.4.14",
+    description="DSPy",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/stanfordnlp/dsp",
+    author="Omar Khattab",
+    author_email="okhattab@stanford.edu",
+    license="MIT License",
+    packages=find_packages(include=["og_dsp.*", "og_dspy.*", "og_dsp", "og_dspy"]),
+    python_requires=">=3.9",
+    install_requires=requirements,
 
     extras_require={
         "chromadb": ["chromadb~=0.4.14"],
@@ -40,13 +40,13 @@ setup(
         "groq": ["groq~=0.8.0"],
         "langfuse": ["langfuse~=2.36.1"]
     },
-    classifiers=[	
-        "Development Status :: 3 - Alpha",	
-        "Intended Audience :: Science/Research",	
-        "License :: OSI Approved :: MIT License",	
-        "Operating System :: POSIX :: Linux",	
-        "Programming Language :: Python :: 3",	
-        "Programming Language :: Python :: 3.8",	
-        "Programming Language :: Python :: 3.9",	
-    ],	
-)	
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: POSIX :: Linux",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+    ],
+)
