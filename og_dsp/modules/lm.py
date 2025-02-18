@@ -29,7 +29,7 @@ class LM(ABC):
     def print_green(self, text: str, end: str = "\n"):
         import og_dspy
 
-        if dspy.settings.experimental:
+        if og_dspy.settings.experimental:
             return "\n\n" + "\x1b[32m" + str(text).lstrip() + "\x1b[0m" + end
         else:
             return "\x1b[32m" + str(text) + "\x1b[0m" + end

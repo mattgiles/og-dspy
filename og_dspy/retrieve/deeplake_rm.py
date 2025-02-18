@@ -38,10 +38,10 @@ class DeeplakeRM(dspy.Retrieve):
         Below is a code snippet that shows how to use Deep Lake as the default retriver:
         ```python
         from deeplake import VectorStore
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         deeplake_client = VectorStore
         retriever_model = DeeplakeRM("my_vectorstore_path", deeplake_client=deeplake_client)
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         ```
 
         Below is a code snippet that shows how to use Deep Lake in the forward() function of a module
@@ -79,7 +79,7 @@ class DeeplakeRM(dspy.Retrieve):
 
     def forward(
         self, query_or_queries: Union[str, List[str]], k: Optional[int],**kwargs,
-    ) -> dspy.Prediction:
+    ) -> og_dspy.Prediction:
 
         """Search with DeepLake for self.k top passages for query
 
@@ -88,7 +88,7 @@ class DeeplakeRM(dspy.Retrieve):
             k (Optional[int]): The number of top passages to retrieve. Defaults to self.k.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         queries = (
             [query_or_queries]

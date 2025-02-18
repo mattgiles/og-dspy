@@ -49,20 +49,20 @@ class Avatar(dspy.Module):
 
         self.verbose = verbose
         self.max_iters = max_iters
-        self.actor = dspy.TypedPredictor(self.actor_signature)
+        self.actor = og_dspy.TypedPredictor(self.actor_signature)
 
         self.actor_clone = deepcopy(self.actor)
 
 
     def _get_field(self, field_info: FieldInfo):
         if field_info.json_schema_extra['__dspy_field_type'] == 'input':
-            return dspy.InputField(
+            return og_dspy.InputField(
                 prefix=field_info.json_schema_extra['prefix'],
                 desc=field_info.json_schema_extra['desc'],
                 format=field_info.json_schema_extra['format'] if 'format' in field_info.json_schema_extra else None,
             )
         elif field_info.json_schema_extra['__dspy_field_type'] == 'output':
-            return dspy.OutputField(
+            return og_dspy.OutputField(
                 prefix=field_info.json_schema_extra['prefix'],
                 desc=field_info.json_schema_extra['desc'],
                 format=field_info.json_schema_extra['format'] if 'format' in field_info.json_schema_extra else None,
@@ -80,7 +80,7 @@ class Avatar(dspy.Module):
 
         self.actor.signature = self.actor.signature.append(
             f"result_{idx}",
-            dspy.InputField(
+            og_dspy.InputField(
                 prefix=f"Result {idx}:",
                 desc=f"{get_number_with_suffix(idx)} result",
                 type_=str,
@@ -97,7 +97,7 @@ class Avatar(dspy.Module):
         else:
             self.actor.signature = self.actor.signature.append(
                 f"action_{idx+1}",
-                dspy.OutputField(
+                og_dspy.OutputField(
                     prefix=f"Action {idx+1}:",
                     desc=f"{get_number_with_suffix(idx+1)} action to taken",
                 )
@@ -171,7 +171,7 @@ class Avatar(dspy.Module):
         final_answer = self.actor(**args)
         self.actor = deepcopy(self.actor_clone)
 
-        return dspy.Prediction(
+        return og_dspy.Prediction(
             **{key: getattr(final_answer, key) for key in self.output_fields.keys()},
             actions=action_results,
         )

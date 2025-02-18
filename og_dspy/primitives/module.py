@@ -29,7 +29,7 @@ class BaseModule:
                     param_name = postprocess_parameter_name(param_name, param_value)
                     named_parameters.append((param_name, param_value))
 
-            elif isinstance(param_value, dspy.Module):
+            elif isinstance(param_value, og_dspy.Module):
                 # When a sub-module is pre-compiled, keep it frozen.
                 if not getattr(param_value, "_compiled", False):
                     for sub_name, param in param_value.named_parameters():
@@ -42,7 +42,7 @@ class BaseModule:
             if isinstance(value, Parameter):
                 add_parameter(name, value)
 
-            elif isinstance(value, dspy.Module):
+            elif isinstance(value, og_dspy.Module):
                 # When a sub-module is pre-compiled, keep it frozen.
                 if not getattr(value, "_compiled", False):
                     for sub_name, param in value.named_parameters():

@@ -35,14 +35,14 @@ class Module(BaseModule, metaclass=ProgramMeta):
 
     def set_lm(self, lm):
         import og_dspy
-        assert dspy.settings.experimental, "Setting the lm is an experimental feature."
+        assert og_dspy.settings.experimental, "Setting the lm is an experimental feature."
 
         for _, param in self.named_predictors():
             param.lm = lm
 
     def get_lm(self):
         import og_dspy
-        assert dspy.settings.experimental, "Getting the lm is an experimental feature."
+        assert og_dspy.settings.experimental, "Getting the lm is an experimental feature."
 
         all_used_lms = [param.lm for _, param in self.named_predictors()]
 

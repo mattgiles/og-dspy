@@ -13,8 +13,8 @@ from og_dspy.primitives.prediction import Prediction
 from og_dspy.signatures.signature import ensure_signature, make_signature
 
 
-def predictor(*args: tuple, **kwargs) -> Callable[..., dspy.Module]:
-    def _predictor(func) -> dspy.Module:
+def predictor(*args: tuple, **kwargs) -> Callable[..., og_dspy.Module]:
+    def _predictor(func) -> og_dspy.Module:
         """Decorator that creates a predictor module based on the provided function."""
         signature = _func_to_signature(func)
         *_, output_key = signature.output_fields.keys()
@@ -27,8 +27,8 @@ def predictor(*args: tuple, **kwargs) -> Callable[..., dspy.Module]:
     return _predictor
 
 
-def cot(*args: tuple, **kwargs) -> Callable[..., dspy.Module]:
-    def _cot(func) -> dspy.Module:
+def cot(*args: tuple, **kwargs) -> Callable[..., og_dspy.Module]:
+    def _cot(func) -> og_dspy.Module:
         """Decorator that creates a chain of thought module based on the provided function."""
         signature = _func_to_signature(func)
         *_, output_key = signature.output_fields.keys()
@@ -62,16 +62,16 @@ class FunctionalModule(dspy.Module):
         super().__init__()
         for name in dir(self):
             attr = getattr(self, name)
-            if isinstance(attr, dspy.Module):
+            if isinstance(attr, og_dspy.Module):
                 self.__dict__[name] = attr.copy()
 
 
-def TypedChainOfThought(signature, instructions=None, reasoning=None, *, max_retries=3) -> dspy.Module:  # noqa: N802
+def TypedChainOfThought(signature, instructions=None, reasoning=None, *, max_retries=3) -> og_dspy.Module:  # noqa: N802
     """Just like TypedPredictor, but adds a ChainOfThought OutputField."""
     signature = ensure_signature(signature, instructions)
     output_keys = ", ".join(signature.output_fields.keys())
 
-    default_rationale = dspy.OutputField(
+    default_rationale = og_dspy.OutputField(
         prefix="Reasoning: Let's think step by step in order to",
         desc="${produce the " + output_keys + "}. We ...",
     )
@@ -88,7 +88,7 @@ def TypedChainOfThought(signature, instructions=None, reasoning=None, *, max_ret
 
 class TypedPredictor(dspy.Module):
     def __init__(self, signature, instructions=None, *, max_retries=3, wrap_json=False, explain_errors=False):
-        """Like dspy.Predict, but enforces type annotations in the signature.
+        """Like og_dspy.Predict, but enforces type annotations in the signature.
 
         Args:
             signature: The signature of the module. Can use type annotations.
@@ -99,7 +99,7 @@ class TypedPredictor(dspy.Module):
         """
         super().__init__()
         self.signature = ensure_signature(signature, instructions)
-        self.predictor = dspy.Predict(signature)
+        self.predictor = og_dspy.Predict(signature)
         self.max_retries = max_retries
         self.wrap_json = wrap_json
         self.explain_errors = explain_errors
@@ -121,7 +121,7 @@ class TypedPredictor(dspy.Module):
         schema = json.dumps(type_.model_json_schema())
         if self.wrap_json:
             schema = "```json\n" + schema + "\n```\n"
-        json_object = dspy.Predict(
+        json_object = og_dspy.Predict(
             make_signature(
                 "json_schema -> json_object",
                 "Make a very succinct json object that validates with the following schema",
@@ -178,24 +178,24 @@ class TypedPredictor(dspy.Module):
             Figure out what went wrong, and write instructions to help it avoid the error next time.
             """
 
-            task_description: str = dspy.InputField(desc="What I asked the model to do")
-            language_model_output: str = dspy.InputField(desc="The output of the model")
-            error: str = dspy.InputField(desc="The validation error trigged by the models output")
-            explanation: str = dspy.OutputField(desc="Explain what the model did wrong")
-            advice: str = dspy.OutputField(
+            task_description: str = og_dspy.InputField(desc="What I asked the model to do")
+            language_model_output: str = og_dspy.InputField(desc="The output of the model")
+            error: str = og_dspy.InputField(desc="The validation error trigged by the models output")
+            explanation: str = og_dspy.OutputField(desc="Explain what the model did wrong")
+            advice: str = og_dspy.OutputField(
                 desc="Instructions for the model to do better next time. A single paragraph.",
             )
 
         # TODO: We could also try repair the output here. For example, if the output is a float, but the
         # model returned a "float + explanation", the repair could be to remove the explanation.
 
-        return dspy.Predict(Signature)(
+        return og_dspy.Predict(Signature)(
             task_description=task_description,
             language_model_output=model_output,
             error=error,
         ).advice
 
-    def _prepare_signature(self) -> dspy.Signature:
+    def _prepare_signature(self) -> og_dspy.Signature:
         """Add formats and parsers to the signature fields, based on the type annotations of the fields."""
         signature = self.signature
         for name, field in self.signature.fields.items():
@@ -286,7 +286,7 @@ class TypedPredictor(dspy.Module):
 
         return signature
 
-    def forward(self, **kwargs) -> dspy.Prediction:
+    def forward(self, **kwargs) -> og_dspy.Prediction:
         modified_kwargs = kwargs.copy()
         # We have to re-prepare the signature on every forward call, because the base
         # signature might have been modified by an optimizer or something like that.
@@ -356,7 +356,7 @@ class TypedPredictor(dspy.Module):
                     number = "" if try_i == 0 else f" ({try_i+1})"
                     signature = signature.append(
                         f"error_{name}_{try_i}",
-                        dspy.InputField(
+                        og_dspy.InputField(
                             prefix=f"Past Error{number} in {error_prefix}",
                             desc="An error to avoid in the future",
                         ),
@@ -373,7 +373,7 @@ class TypedPredictor(dspy.Module):
 
 
 def _func_to_signature(func):
-    """Make a dspy.Signature based on a function definition."""
+    """Make a og_dspy.Signature based on a function definition."""
     sig = inspect.signature(func)
     annotations = typing.get_type_hints(func, include_extras=True)
     output_key = func.__name__
@@ -391,7 +391,7 @@ def _func_to_signature(func):
             desc = next((arg for arg in typing.get_args(annotation) if isinstance(arg, str)), None)
             if desc is not None:
                 kwargs["desc"] = desc
-        fields[param.name] = (annotation, dspy.InputField(**kwargs))
+        fields[param.name] = (annotation, og_dspy.InputField(**kwargs))
 
     # Output field
     kwargs = {}
@@ -400,9 +400,9 @@ def _func_to_signature(func):
         desc = next((arg for arg in typing.get_args(annotation) if isinstance(arg, str)), None)
         if desc is not None:
             kwargs["desc"] = desc
-    fields[output_key] = (annotation, dspy.OutputField(**kwargs))
+    fields[output_key] = (annotation, og_dspy.OutputField(**kwargs))
 
-    return dspy.Signature(fields, instructions)
+    return og_dspy.Signature(fields, instructions)
 
 
 def _unwrap_json(output, from_json: Callable[[str], Union[pydantic.BaseModel, str]]):

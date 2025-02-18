@@ -93,7 +93,7 @@ class Neo4jRM(Retrieve):
             embedding_model="text-embedding-ada-002",
         )
 
-        dspy.settings.configure(rm=neo4j_retriever)
+        og_dspy.settings.configure(rm=neo4j_retriever)
         ```
 
         In this example, `Neo4jRM` is configured to retrieve nodes based on the "text" property from an index named "myIndex",

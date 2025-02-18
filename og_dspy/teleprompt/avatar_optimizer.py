@@ -28,23 +28,23 @@ Task:
 (2) Then, review the computational logic for any inconsistencies in the previous actions.
 (3) Lastly, specify the modification in tools used that can lead to improved performance on the negative inputs."""
 
-    instruction: str = dspy.InputField(
+    instruction: str = og_dspy.InputField(
         prefix="Instruction: ",
         desc="Instruction for the actor to execute the task",
     )
-    actions: List[str] = dspy.InputField(
+    actions: List[str] = og_dspy.InputField(
         prefix="Actions: ",
         desc="Actions actor can take to complete the task",
     )
-    pos_input_with_metrics: List[EvalResult] = dspy.InputField(
+    pos_input_with_metrics: List[EvalResult] = og_dspy.InputField(
         prefix="Positive Inputs: ",
         desc="Positive inputs along with their score on a evaluation metric and actions taken",
     )
-    neg_input_with_metrics: List[EvalResult] = dspy.InputField(
+    neg_input_with_metrics: List[EvalResult] = og_dspy.InputField(
         prefix="Negative Inputs: ",
         desc="Negative inputs along with their score on a evaluation metric and actions taken",
     )
-    feedback: str = dspy.OutputField(
+    feedback: str = og_dspy.OutputField(
         prefix="Feedback: ",
         desc="Feedback for the actor to improve the performance of negative inputs",
     )
@@ -59,15 +59,15 @@ Your task is to incorporate the feedback and generate a detailed instruction for
 
 Make sure that the new instruction talks about how to use the tools effectively and should be no more than 3 paragraphs long. The previous instruction contains general guidelines that you must retain in the new instruction."""
 
-    previous_instruction: str = dspy.InputField(
+    previous_instruction: str = og_dspy.InputField(
         prefix="Previous Instruction: ",
         desc="Previous instruction for the actor to execute the task",
     )
-    feedback: str = dspy.InputField(
+    feedback: str = og_dspy.InputField(
         prefix="Feedback: ",
         desc="Feedback for the actor to improve the performance of negative inputs",
     )
-    new_instruction: str = dspy.OutputField(
+    new_instruction: str = og_dspy.OutputField(
         prefix="New Instruction: ",
         desc="New instruction for the actor to execute the task",
     )
@@ -96,8 +96,8 @@ class AvatarOptimizer(Teleprompter):
         self.max_positive_inputs = max_positive_inputs or DEFAULT_MAX_EXAMPLES
         self.max_negative_inputs = max_negative_inputs or DEFAULT_MAX_EXAMPLES
 
-        self.comparator = dspy.TypedPredictor(Comparator)
-        self.feedback_instruction = dspy.Predict(FeedbackBasedInstruction)
+        self.comparator = og_dspy.TypedPredictor(Comparator)
+        self.feedback_instruction = og_dspy.Predict(FeedbackBasedInstruction)
 
     def process_example(self, actor, example, return_outputs):
         actor = deepcopy(actor)
@@ -147,7 +147,7 @@ class AvatarOptimizer(Teleprompter):
 
     def _get_pos_neg_results(
         self,
-        actor: dspy.Module,
+        actor: og_dspy.Module,
         trainset: List[dspy.Example]
     ) -> Tuple[float, List[EvalResult], List[EvalResult]]:
         pos_inputs = []

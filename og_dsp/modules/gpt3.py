@@ -75,7 +75,7 @@ class GPT3(LM):
 
         assert (
                 api_provider != "azure"
-        ), "Azure functionality with base OpenAI has been deprecated, please use dspy.AzureOpenAI instead."
+        ), "Azure functionality with base OpenAI has been deprecated, please use og_dspy.AzureOpenAI instead."
 
         default_model_type = (
             "chat"

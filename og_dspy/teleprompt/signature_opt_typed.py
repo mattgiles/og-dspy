@@ -134,7 +134,7 @@ def generate_with_avoidance(signatures_to_avoid: list[BaseModel]) -> type[Signat
 
 @dataclass
 class OptimizerResult:
-    program: dspy.Program
+    program: og_dspy.Program
     signatures: list[dict[str, Signature]]
     scores: list[float]
 
@@ -150,7 +150,7 @@ def optimize_signature(
     prompt_model=None,
     initial_prompts=2,
     verbose=False,
-) -> dspy.Program:
+) -> og_dspy.Program:
     """Create a new program that is optimized for the given task.
 
     `student` is a program that needs to be optimized,
@@ -158,9 +158,9 @@ def optimize_signature(
 
     Parameters
     ----------
-    student : dspy.Program
+    student : og_dspy.Program
         The program to optimize.
-    evaluator : dspy.Evaluator
+    evaluator : og_dspy.Evaluator
         The evaluator to use to score the program.
     n_iterations : int, optional
         The number of iterations to run, by default 10
@@ -170,7 +170,7 @@ def optimize_signature(
         The order in which to sort the scores, by default "increasing"
     strategy : Literal["last", "best"], optional
         The strategy to use to select the final program, by default "best"
-    prompt_model : dspy.LanguageModel, optional
+    prompt_model : og_dspy.LanguageModel, optional
         The language model to use to generate prompts, by default None
     initial_prompts : int, optional
         The number of initial prompts to generate, by default 2.
@@ -185,7 +185,7 @@ def optimize_signature(
     if n_iterations < 1 + initial_prompts:
         raise ValueError("n_iterations must be at least 1 + initial_prompts")
 
-    prompt_model = prompt_model or dspy.settings.lm
+    prompt_model = prompt_model or og_dspy.settings.lm
     MyGenerateInstructionInitial = make_initial_signature(initial_prompts)  # noqa: N806
 
     module = student.deepcopy()
@@ -210,7 +210,7 @@ def optimize_signature(
         candidates[name] = [make_info(p.signature)]
 
     # Make some initial candidates
-    with dspy.settings.context(lm=prompt_model):
+    with og_dspy.settings.context(lm=prompt_model):
         # TODO: Parallelize this
         for name, _p in named_predictors:
             if verbose:
@@ -248,7 +248,7 @@ def optimize_signature(
             break
 
         # Otherwise generate the next candidate
-        with dspy.settings.context(lm=prompt_model):
+        with og_dspy.settings.context(lm=prompt_model):
             # TODO: Parallelize this
             for name, _p in named_predictors:
                 SignatureInfo = type(candidates[name][0])  # noqa: N806

@@ -52,7 +52,7 @@ class Example(dotdict):
 #         ademos = []
 
 #         for example in train:  # tqdm.tqdm
-#             raw_example = dsp.Example(example)
+#             raw_example = og_dsp.Example(example)
 
 #             if (k is not None) and len(ademos) >= k:
 #                 example = None
@@ -166,7 +166,7 @@ def knn(
 
     train_casted_to_vectorize = [cast(cur_elem) for cur_elem in train]
 
-    vectorizer: BaseSentenceVectorizer = dsp.settings.vectorizer
+    vectorizer: BaseSentenceVectorizer = og_dsp.settings.vectorizer
     all_vectors = vectorizer(train_casted_to_vectorize).astype(np.float32)
 
     index = create_faiss_index(

@@ -32,9 +32,9 @@ class VectaraRM(dspy.Retrieve):
         ```python
         from vectara_client import vectaraClient
 
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         retriever_model = vectaraRM("<VECTARA_CUSTOMER_ID>", "<VECTARA_CORPUS_ID>", "<VECTARA_API_KEY>")
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         ```
 
         Below is a code snippet that shows how to use Vectara in the forward() function of a module
@@ -133,14 +133,14 @@ class VectaraRM(dspy.Retrieve):
         ]
         return res
 
-    def forward(self, query_or_queries: Union[str, List[str]], k: Optional[int]) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, List[str]], k: Optional[int]) -> og_dspy.Prediction:
         """Search with Vectara for self.k top passages for query
 
         Args:
             query_or_queries (Union[str, List[str]]): The query or queries to search for.
             k (Optional[int]): The number of top passages to retrieve. Defaults to self.k.
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         queries = (
             [query_or_queries]

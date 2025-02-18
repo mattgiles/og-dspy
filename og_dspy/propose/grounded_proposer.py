@@ -26,17 +26,17 @@ class DescribeProgram(dspy.Signature):
     (
         """Below is some pseudo-code for a pipeline that solves tasks with calls to language models. Please describe what type of task this program appears to be designed to solve, and how it appears to work."""
     )
-    program_code = dspy.InputField(
+    program_code = og_dspy.InputField(
         format=str,
         desc="Pseudocode for a language model program designed to solve a particular task.",
         prefix="PROGRAM CODE:",
     )
-    program_example = dspy.InputField(
+    program_example = og_dspy.InputField(
         format=str,
         desc="An example of the program in use.",
         prefix="EXAMPLE OF PROGRAM IN USE:",
     )
-    program_description = dspy.OutputField(
+    program_description = og_dspy.OutputField(
         desc="Describe what task the program is designed to solve, and how it goes about solving this task.",
         prefix="SUMMARY OF PROGRAM ABOVE:",
     )
@@ -46,24 +46,24 @@ class DescribeModule(dspy.Signature):
     (
         """Below is some pseudo-code for a pipeline that solves tasks with calls to language models. Please describe the purpose of one of the specified module in this pipeline."""
     )
-    program_code = dspy.InputField(
+    program_code = og_dspy.InputField(
         format=str,
         desc="Pseudocode for a language model program designed to solve a particular task.",
         prefix="PROGRAM CODE:",
     )
-    program_example = dspy.InputField(
+    program_example = og_dspy.InputField(
         format=str,
         desc="An example of the program in use.",
         prefix="EXAMPLE OF PROGRAM IN USE:",
     )
-    program_description = dspy.InputField(
+    program_description = og_dspy.InputField(
         desc="Summary of the task the program is designed to solve, and how it goes about solving it.",
         prefix="SUMMARY OF PROGRAM ABOVE:",
     )
-    module = dspy.InputField(
+    module = og_dspy.InputField(
         desc="The module in the program that we want to describe.", prefix="MODULE:",
     )
-    module_description = dspy.OutputField(
+    module_description = og_dspy.OutputField(
         desc="Description of the module's role in the broader program.",
         prefix="MODULE DESCRIPTION:",
     )
@@ -81,49 +81,49 @@ def generate_instruction_class(
             """Use the information below to learn about a task that we are trying to solve using calls to an LM, then generate a new instruction that will be used to prompt a Language Model to better solve the task."""
         )
         if use_dataset_summary:
-            dataset_description = dspy.InputField(
+            dataset_description = og_dspy.InputField(
                 desc="A description of the dataset that we are using.",
                 prefix="DATASET SUMMARY:",
             )
         if program_aware:
-            program_code = dspy.InputField(
+            program_code = og_dspy.InputField(
                 format=str,
                 desc="Language model program designed to solve a particular task.",
                 prefix="PROGRAM CODE:",
             )
-            program_description = dspy.InputField(
+            program_description = og_dspy.InputField(
                 desc="Summary of the task the program is designed to solve, and how it goes about solving it.",
                 prefix="PROGRAM DESCRIPTION:",
             )
-            module = dspy.InputField(
+            module = og_dspy.InputField(
                 desc="The module to create an instruction for.", prefix="MODULE:",
             )
-        task_demos = dspy.InputField(
+        task_demos = og_dspy.InputField(
             format=str,
             desc="Example inputs/outputs of our module.",
             prefix="TASK DEMO(S):",
         )
         if use_instruct_history:
-            previous_instructions = dspy.InputField(
+            previous_instructions = og_dspy.InputField(
                 format=str,
                 desc="Previous instructions we've attempted, along with their associated scores.",
                 prefix="PREVIOUS INSTRUCTIONS:",
             )
-        basic_instruction = dspy.InputField(
+        basic_instruction = og_dspy.InputField(
             format=str, desc="Basic instruction.", prefix="BASIC INSTRUCTION:",
         )
         if use_tip:
-            tip = dspy.InputField(
+            tip = og_dspy.InputField(
                 format=str,
                 desc="A suggestion for how to go about generating the new instruction.",
                 prefix="TIP:",
             )
-        proposed_instruction = dspy.OutputField(
+        proposed_instruction = og_dspy.OutputField(
             desc="Propose an instruction that will be used to prompt a Language Model to perform this task.",
             prefix="PROPOSED INSTRUCTION:",
         )
 
-    return dspy.Predict(GenerateSingleModuleInstruction)
+    return og_dspy.Predict(GenerateSingleModuleInstruction)
 
 ### CLASS RESPONSIBLE FOR GENERATING A NEW INSTRUCTION, USING THE HELPER SIGNATURES ABOVE ###
 
@@ -145,8 +145,8 @@ class GenerateModuleInstruction(dspy.Module):
         self.use_tip = use_tip
 
         self.program_code_string = program_code_string
-        self.describe_program = dspy.Predict(DescribeProgram)
-        self.describe_module = dspy.Predict(DescribeModule)
+        self.describe_program = og_dspy.Predict(DescribeProgram)
+        self.describe_module = og_dspy.Predict(DescribeModule)
         self.generate_module_instruction = generate_instruction_class(
             use_dataset_summary=use_dataset_summary,
             program_aware=program_aware,
@@ -227,7 +227,7 @@ class GenerateModuleInstruction(dspy.Module):
         proposed_instruction = strip_prefix(instruct.proposed_instruction)
         # print(f"PROPOSED INSTRUCTION: {proposed_instruction}")
 
-        return dspy.Prediction(proposed_instruction=proposed_instruction)
+        return og_dspy.Prediction(proposed_instruction=proposed_instruction)
 
 ### CLASS USED TO GENERATE THE FULL SET OF INSTRUCTIONS GIVEN THE SPECIFIED CRITERIA ###
 
@@ -344,7 +344,7 @@ class GroundedProposer(Proposer):
 
         # Generate a new instruction for our predictor, using the temperature specified for this round
         original_temp = prompt_model.kwargs["temperature"]
-        with dspy.settings.context(lm=prompt_model):
+        with og_dspy.settings.context(lm=prompt_model):
             prompt_model.kwargs["temperature"] = T
             proposed_instruction = instruction_generator.forward(
                 demo_candidates=demo_candidates,

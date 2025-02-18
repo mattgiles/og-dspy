@@ -81,11 +81,11 @@ class Assert(Constraint):
         if isinstance(self.result, bool):
             if self.result:
                 return True
-            elif dspy.settings.bypass_assert:
-                dspy.logger.error(f"AssertionError: {self.msg}")
+            elif og_dspy.settings.bypass_assert:
+                og_dspy.logger.error(f"AssertionError: {self.msg}")
                 return True
             else:
-                dspy.logger.error(f"AssertionError: {self.msg}")
+                og_dspy.logger.error(f"AssertionError: {self.msg}")
                 raise DSPyAssertionError(
                     id=self.id,
                     msg=self.msg,
@@ -104,11 +104,11 @@ class Suggest(Constraint):
         if isinstance(self.result, bool):
             if self.result:
                 return True
-            elif dspy.settings.bypass_suggest:
-                dspy.logger.info(f"SuggestionFailed: {self.msg}")
+            elif og_dspy.settings.bypass_suggest:
+                og_dspy.logger.info(f"SuggestionFailed: {self.msg}")
                 return True
             else:
-                dspy.logger.info(f"SuggestionFailed: {self.msg}")
+                og_dspy.logger.info(f"SuggestionFailed: {self.msg}")
                 raise DSPySuggestionError(
                     id=self.id,
                     msg=self.msg,
@@ -130,7 +130,7 @@ def noop_handler(func):
     """
 
     def wrapper(*args, **kwargs):
-        with dspy.settings.context(bypass_assert=True, bypass_suggest=True):
+        with og_dspy.settings.context(bypass_assert=True, bypass_suggest=True):
             return func(*args, **kwargs)
 
     return wrapper
@@ -144,7 +144,7 @@ def bypass_suggest_handler(func):
     """
 
     def wrapper(*args, **kwargs):
-        with dspy.settings.context(bypass_suggest=True, bypass_assert=False):
+        with og_dspy.settings.context(bypass_suggest=True, bypass_assert=False):
             return func(*args, **kwargs)
 
     return wrapper
@@ -158,7 +158,7 @@ def bypass_assert_handler(func):
     """
 
     def wrapper(*args, **kwargs):
-        with dspy.settings.context(bypass_assert=True):
+        with og_dspy.settings.context(bypass_assert=True):
             return func(*args, **kwargs)
 
     return wrapper
@@ -186,23 +186,23 @@ def backtrack_handler(func, bypass_suggest=True, max_backtracks=2):
 
     def wrapper(*args, **kwargs):
         error_msg, result = None, None
-        with dspy.settings.lock:
-            dspy.settings.backtrack_to = None
-            dspy.settings.suggest_failures = 0
-            dspy.settings.assert_failures = 0
+        with og_dspy.settings.lock:
+            og_dspy.settings.backtrack_to = None
+            og_dspy.settings.suggest_failures = 0
+            og_dspy.settings.assert_failures = 0
 
             # Predictor -> List[feedback_msg]
-            dspy.settings.predictor_feedbacks = {}
+            og_dspy.settings.predictor_feedbacks = {}
 
             current_error = None
             for i in range(max_backtracks + 1):
-                if i > 0 and dspy.settings.backtrack_to is not None:
+                if i > 0 and og_dspy.settings.backtrack_to is not None:
                     # generate values for new fields
                     feedback_msg = _build_error_msg(
-                        dspy.settings.predictor_feedbacks[dspy.settings.backtrack_to],
+                        og_dspy.settings.predictor_feedbacks[dspy.settings.backtrack_to],
                     )
 
-                    dspy.settings.backtrack_to_args = {
+                    og_dspy.settings.backtrack_to_args = {
                         "feedback": feedback_msg,
                         "past_outputs": past_outputs,
                     }
@@ -211,12 +211,12 @@ def backtrack_handler(func, bypass_suggest=True, max_backtracks=2):
                 if i == max_backtracks:
                     if isinstance(current_error, DSPyAssertionError):
                         raise current_error
-                    dsp.settings.trace.clear()
+                    og_dsp.settings.trace.clear()
                     result = bypass_suggest_handler(func)(*args, **kwargs) if bypass_suggest else None
                     break
                 else:
                     try:
-                        dsp.settings.trace.clear()
+                        og_dsp.settings.trace.clear()
                         result = func(*args, **kwargs)
                         break
                     except (DSPySuggestionError, DSPyAssertionError) as e:
@@ -231,31 +231,31 @@ def backtrack_handler(func, bypass_suggest=True, max_backtracks=2):
 
                         # increment failure count depending on type of error
                         if isinstance(e, DSPySuggestionError) and e.is_metric:
-                            dspy.settings.suggest_failures += 1
+                            og_dspy.settings.suggest_failures += 1
                         elif isinstance(e, DSPyAssertionError) and e.is_metric:
-                            dspy.settings.assert_failures += 1
+                            og_dspy.settings.assert_failures += 1
 
-                        if dsp.settings.trace:
+                        if og_dsp.settings.trace:
                             if error_target_module:
                                 for i in range(len(dsp.settings.trace) - 1, -1, -1):
-                                    trace_element = dsp.settings.trace[i]
+                                    trace_element = og_dsp.settings.trace[i]
                                     mod = trace_element[0]
                                     if mod.signature == error_target_module:
                                         error_state = e.state[i]
-                                        dspy.settings.backtrack_to = mod
+                                        og_dspy.settings.backtrack_to = mod
                                         break
                             else:
-                                dspy.settings.backtrack_to = dsp.settings.trace[-1][0]
+                                og_dspy.settings.backtrack_to = og_dsp.settings.trace[-1][0]
 
-                            if dspy.settings.backtrack_to is None:
-                                dspy.logger.error("Specified module not found in trace")
+                            if og_dspy.settings.backtrack_to is None:
+                                og_dspy.logger.error("Specified module not found in trace")
 
                             # save unique feedback message for predictor
-                            if error_msg not in dspy.settings.predictor_feedbacks.setdefault(
-                                dspy.settings.backtrack_to,
+                            if error_msg not in og_dspy.settings.predictor_feedbacks.setdefault(
+                                og_dspy.settings.backtrack_to,
                                 [],
                             ):
-                                dspy.settings.predictor_feedbacks[dspy.settings.backtrack_to].append(error_msg)
+                                og_dspy.settings.predictor_feedbacks[dspy.settings.backtrack_to].append(error_msg)
 
                             output_fields = error_state[0].new_signature.output_fields
                             past_outputs = {}
@@ -273,7 +273,7 @@ def backtrack_handler(func, bypass_suggest=True, max_backtracks=2):
                             error_op.pop("_assert_traces", None)
 
                         else:
-                            dspy.logger.error(
+                            og_dspy.logger.error(
                                 "UNREACHABLE: No trace available, this should not happen. Is this run time?",
                             )
 
@@ -288,7 +288,7 @@ def handle_assert_forward(assertion_handler, **handler_args):
 
         # if user has specified a bypass_assert flag, set it
         if "bypass_assert" in args_to_vals:
-            dspy.settings.configure(bypass_assert=args_to_vals["bypass_assert"])
+            og_dspy.settings.configure(bypass_assert=args_to_vals["bypass_assert"])
 
         wrapped_forward = assertion_handler(self._forward, **handler_args)
         return wrapped_forward(*args, **kwargs)
@@ -312,7 +312,7 @@ def assert_transform_module(
             "Module must have a forward method to have assertions handled.",
         )
     if getattr(module, "_forward", False):
-        dspy.logger.info(
+        og_dspy.logger.info(
             f"Module {module.__class__.__name__} already has a _forward method. Skipping...",
         )
         pass  # TODO warning: might be overwriting a previous _forward method
@@ -323,11 +323,11 @@ def assert_transform_module(
     )
 
     if all(
-        map(lambda p: isinstance(p[1], dspy.retry.Retry), module.named_predictors()),
+        map(lambda p: isinstance(p[1], og_dspy.retry.Retry), module.named_predictors()),
     ):
         pass  # we already applied the Retry mapping outside
     elif all(
-        map(lambda p: not isinstance(p[1], dspy.retry.Retry), module.named_predictors()),
+        map(lambda p: not isinstance(p[1], og_dspy.retry.Retry), module.named_predictors()),
     ):
         module.map_named_predictors(dspy.retry.Retry)
     else:

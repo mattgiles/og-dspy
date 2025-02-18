@@ -20,7 +20,7 @@ class WatsonDiscoveryRM(dspy.Retrieve):
         k (int, optional): The number of top passages to retrieve. Defaults to 5.
 
     Returns:
-        dspy.Prediction: An object containing the retrieved passages.
+        og_dspy.Prediction: An object containing the retrieved passages.
     """
 
     def __init__(
@@ -44,7 +44,7 @@ class WatsonDiscoveryRM(dspy.Retrieve):
 
         super().__init__(k=k)
 
-    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int]= None) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int]= None) -> og_dspy.Prediction:
         """Search with Watson Discovery for self.k top passages for query.
 
         Args:
@@ -52,7 +52,7 @@ class WatsonDiscoveryRM(dspy.Retrieve):
             k (int, optional): The number of top passages to retrieve.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         queries = [query_or_queries] if isinstance(query_or_queries, str) else query_or_queries
         queries = [q for q in queries if q]  # Filter empty queries

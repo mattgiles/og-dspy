@@ -13,7 +13,7 @@ class ClarifaiLLM(LM):
         **kwargs: Additional arguments to pass to the API provider.
     Example:
         import og_dspy
-        dspy.configure(lm=dspy.Clarifai(model=MODEL_URL,
+        og_dspy.configure(lm=dspy.Clarifai(model=MODEL_URL,
                                         api_key=CLARIFAI_PAT,
                                         inference_params={"max_tokens":100,'temperature':0.6}))
     """

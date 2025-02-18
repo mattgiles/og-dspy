@@ -45,18 +45,18 @@ class MilvusRM(dspy.Retrieve):
         k (int, optional): The number of top passages to retrieve. Defaults to 3.
 
     Returns:
-        dspy.Prediction: An object containing the retrieved passages.
+        og_dspy.Prediction: An object containing the retrieved passages.
 
     Examples:
         Below is a code snippet that shows how to use this as the default retriever:
         ```python
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         retriever_model = MilvusRM(
             collection_name="<YOUR_COLLECTION_NAME>",
             uri="<YOUR_MILVUS_URI>",
             token="<YOUR_MILVUS_TOKEN>"
             )
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         ```
 
         Below is a code snippet that shows how to use this in the forward() function of a module
@@ -84,7 +84,7 @@ class MilvusRM(dspy.Retrieve):
         self.embedding_function = embedding_function or openai_embedding_function
         self.top_k = k
 
-    def forward(self, query_or_queries: Union[str, List[str]], k: Optional[int] = None) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, List[str]], k: Optional[int] = None) -> og_dspy.Prediction:
         if isinstance(query_or_queries, str):
             query_or_queries = [query_or_queries]
         query_embeddings = self.embedding_function(query_or_queries)

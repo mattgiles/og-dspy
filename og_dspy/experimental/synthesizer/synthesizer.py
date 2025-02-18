@@ -32,19 +32,19 @@ __all__ = [
 class Synthesizer:
     def __init__(self, config: SynthesizerArguments):
         self.config = config
-        self.input_lm = config.input_lm_model or dspy.settings.lm
-        self.output_lm = config.output_lm_model or dspy.settings.lm
+        self.input_lm = config.input_lm_model or og_dspy.settings.lm
+        self.output_lm = config.output_lm_model or og_dspy.settings.lm
 
-        self.explain_task = dspy.Predict(ExplainTask)
-        self.understand_task = dspy.Predict(UnderstandTask)
-        self.get_feedback_on_generation = dspy.Predict(GetFeedbackOnGeneration)
-        self.generate_field_description = dspy.Predict(GenerateFieldDescription)
-        self.update_task_description = dspy.Predict(UpdateTaskDescriptionBasedOnFeedback)
+        self.explain_task = og_dspy.Predict(ExplainTask)
+        self.understand_task = og_dspy.Predict(UnderstandTask)
+        self.get_feedback_on_generation = og_dspy.Predict(GetFeedbackOnGeneration)
+        self.generate_field_description = og_dspy.Predict(GenerateFieldDescription)
+        self.update_task_description = og_dspy.Predict(UpdateTaskDescriptionBasedOnFeedback)
 
         self.generate_input_data = GenerateInputFieldsData
         self.generate_output_data = GenerateOutputFieldsData
 
-    def _gather_feedback(self, examples: dspy.Example) -> str:
+    def _gather_feedback(self, examples: og_dspy.Example) -> str:
         if self.config.feedback_mode == "human":
             input_keys = examples.inputs().keys()
 
@@ -93,12 +93,12 @@ class Synthesizer:
         self,
         input_keys: Mapping[str, str],
         output_keys: Mapping[str, str],
-        ground_source: Optional[Union[List[dspy.Example], dspy.Signature]] = None,
+        ground_source: Optional[Union[List[dspy.Example], og_dspy.Signature]] = None,
     ):
         for key in tqdm(input_keys, desc="Preparing Input Fields"):
             field_name, field_description = self._get_field_data(key, input_keys)
 
-            output_field = dspy.OutputField(
+            output_field = og_dspy.OutputField(
                 prefix=f"{field_name}:",
                 desc=field_description,
             )
@@ -112,14 +112,14 @@ class Synthesizer:
                 self.generate_input_data = self.generate_input_data.insert(
                     -1,
                     "ground_source",
-                    dspy.InputField(
+                    og_dspy.InputField(
                         prefix="Pre-Generated Examples:",
                         desc="Pre-Generated Examples to differ the inputs around.",
                         format=format_examples,
                     ),
                 )
 
-            input_field = dspy.InputField(
+            input_field = og_dspy.InputField(
                 prefix=f"{field_name}:",
                 desc=field_description,
             )
@@ -132,7 +132,7 @@ class Synthesizer:
         for key in tqdm(output_keys, desc="Preparing Output Fields"):
             field_name, field_description = self._get_field_data(key, output_keys)
 
-            output_field = dspy.OutputField(
+            output_field = og_dspy.OutputField(
                 prefix=f"{field_name}:",
                 desc=field_description,
             )
@@ -142,10 +142,10 @@ class Synthesizer:
                 output_field,
             )
 
-        return dspy.ChainOfThought(self.generate_input_data), dspy.Predict(self.generate_output_data)
+        return og_dspy.ChainOfThought(self.generate_input_data), og_dspy.Predict(self.generate_output_data)
 
-    def _get_dataset_metadata(self, ground_source: Union[List[dspy.Example], dspy.Signature]):
-        if isinstance(ground_source, dspy.SignatureMeta):
+    def _get_dataset_metadata(self, ground_source: Union[List[dspy.Example], og_dspy.Signature]):
+        if isinstance(ground_source, og_dspy.SignatureMeta):
             task_description = ground_source.__doc__
             if task_description.startswith("Given the fields"):
                 task_description = self.understand_task(examples=ground_source.__doc__).explanation
@@ -155,7 +155,7 @@ class Synthesizer:
 
             return task_description, input_keys, output_keys
 
-        elif isinstance(ground_source, list) and isinstance(ground_source[0], dspy.Example):
+        elif isinstance(ground_source, list) and isinstance(ground_source[0], og_dspy.Example):
             task_description = self.explain_task(examples=ground_source).explanation
             input_keys = {key:f"${{{key}}}" for key in ground_source[0].inputs()}
             output_keys = {key:f"${{{key}}}" for key in ground_source[0].labels()}
@@ -167,7 +167,7 @@ class Synthesizer:
 
     def generate(
         self,
-        ground_source: Union[List[dspy.Example], dspy.Signature],
+        ground_source: Union[List[dspy.Example], og_dspy.Signature],
         num_data: int,
         batch_size: int = 1,
     ):
@@ -206,7 +206,7 @@ class Synthesizer:
                     raise ValueError("Ground source must be a list of examples when `num_example_for_optim` is provided.")
                 kwargs["ground_source"] = random.sample(ground_source, k=self.config.num_example_for_optim)
 
-            with dspy.context(lm=self.input_lm):
+            with og_dspy.context(lm=self.input_lm):
                 inputs = self.input_predictor(**kwargs)
 
             input_kwargs = [{
@@ -217,7 +217,7 @@ class Synthesizer:
             for kwargs in input_kwargs:
                 outputs = None
 
-                with dspy.context(lm=self.output_lm, temperature=iter_temperature):
+                with og_dspy.context(lm=self.output_lm, temperature=iter_temperature):
                     if self.config.output_teacher_module:
                         outputs = self.config.output_teacher_module(**kwargs)
 

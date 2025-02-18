@@ -28,9 +28,9 @@ def get_formatted_template(predict_module: Predict, kwargs: Dict[str, Any]) -> s
     # All of the other kwargs are presumed to fit a prefix of the signature.
     # That is, they are input variables for the bottom most generation, so
     # we place them inside the input - x - together with the demos.
-    x = dsp.Example(demos=demos, **kwargs)
+    x = og_dsp.Example(demos=demos, **kwargs)
 
-    # Switch to legacy format for dsp.generate
+    # Switch to legacy format for og_dsp.generate
     template = signature_to_template(signature)
 
     return template(x)
@@ -41,25 +41,25 @@ def replace_placeholder(text: str) -> str:
     return re.sub(r'\$\{([^\{\}]*)\}', r'${{\1}}', text)
 
 
-def _input_keys_from_template(template: dsp.Template) -> InputKeys:
+def _input_keys_from_template(template: og_dsp.Template) -> InputKeys:
     """Get input keys from template."""
     # get only fields that are marked OldInputField and NOT OldOutputField
     # template_vars = list(template.kwargs.keys())
     return [
-        k for k, v in template.kwargs.items() if isinstance(v, dspy.signatures.OldInputField)
+        k for k, v in template.kwargs.items() if isinstance(v, og_dspy.signatures.OldInputField)
     ]
 
-def _output_keys_from_template(template: dsp.Template) -> InputKeys:
+def _output_keys_from_template(template: og_dsp.Template) -> InputKeys:
     """Get output keys from template."""
     # get only fields that are marked OldOutputField and NOT OldInputField
     # template_vars = list(template.kwargs.keys())
     return [
-        k for k, v in template.kwargs.items() if isinstance(v, dspy.signatures.OldOutputField)
+        k for k, v in template.kwargs.items() if isinstance(v, og_dspy.signatures.OldOutputField)
     ]
 
 
 class DSPyPromptTemplate(BasePromptTemplate):
-    """A prompt template for DSPy.
+    """A prompt template for og_dspy.
 
     Takes in a predict module from DSPy (whether unoptimized or optimized),
     and extracts the relevant prompt template from it given the input.
@@ -139,24 +139,24 @@ class Template2Signature(dspy.Signature):
     """You are a processor for prompts. I will give you a prompt template (Python f-string) for an arbitrary task for other LMs.
 Your job is to prepare three modular pieces: (i) any essential task instructions or guidelines, (ii) a list of variable names for inputs, (iv) the variable name for output."""
 
-    template = dspy.InputField(format=lambda x: f"```\n\n{x.strip()}\n\n```\n\nLet's now prepare three modular pieces.")
-    essential_instructions = dspy.OutputField()
-    input_keys = dspy.OutputField(desc='comma-separated list of valid variable names')
-    output_key = dspy.OutputField(desc='a valid variable name')
+    template = og_dspy.InputField(format=lambda x: f"```\n\n{x.strip()}\n\n```\n\nLet's now prepare three modular pieces.")
+    essential_instructions = og_dspy.OutputField()
+    input_keys = og_dspy.OutputField(desc='comma-separated list of valid variable names')
+    output_key = og_dspy.OutputField(desc='a valid variable name')
 
 
-def build_signature(prompt: PromptTemplate) -> dspy.Signature:
+def build_signature(prompt: PromptTemplate) -> og_dspy.Signature:
     """Attempt to build signature from prompt."""
     # TODO: allow plugging in any llamaindex LLM
-    gpt4T = dspy.OpenAI(model='gpt-4-1106-preview', max_tokens=4000, model_type='chat')
+    gpt4T = og_dspy.OpenAI(model='gpt-4-1106-preview', max_tokens=4000, model_type='chat')
 
-    with dspy.context(lm=gpt4T):
-        parts = dspy.Predict(Template2Signature)(template=prompt.template)
+    with og_dspy.context(lm=gpt4T):
+        parts = og_dspy.Predict(Template2Signature)(template=prompt.template)
 
     inputs = {k.strip(): InputField() for k in parts.input_keys.split(',')}
     outputs = {k.strip(): OutputField() for k in parts.output_key.split(',')}
 
-    # dynamically create a pydantic model that subclasses dspy.Signature
+    # dynamically create a pydantic model that subclasses og_dspy.Signature
     fields = {
         k: (str, v) for k, v in {**inputs, **outputs}.items()
     }
@@ -171,15 +171,15 @@ class DSPyComponent(QueryComponent):
     TODO: add ability to translate from an existing prompt template / LLM.
 
     """
-    predict_module: dspy.Predict
-    predict_template: dsp.Template
+    predict_module: og_dspy.Predict
+    predict_template: og_dsp.Template
 
     class Config:
         arbitrary_types_allowed = True
 
     def __init__(
         self,
-        predict_module: dspy.Predict,
+        predict_module: og_dspy.Predict,
     ) -> None:
         """Initialize."""
         return super().__init__(
@@ -259,4 +259,4 @@ class LlamaIndexModule(dspy.Module):
     def forward(self, **kwargs: Any) -> Dict[str, Any]:
         """Forward."""
         output_dict = self.query_pipeline.run(**kwargs, return_values_direct=False)
-        return dspy.Prediction(**output_dict)
+        return og_dspy.Prediction(**output_dict)

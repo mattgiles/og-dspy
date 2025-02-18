@@ -16,7 +16,7 @@ class LlamaIndexRM(dspy.Retrieve):
     """Implements a retriever which wraps over a LlamaIndex retriever.
 
     This is done to bridge LlamaIndex and DSPy and allow the various retrieval
-    abstractions in LlamaIndex to be used in DSPy.
+    abstractions in LlamaIndex to be used in og_dspy.
 
     To-do (maybe):
         - Async support (DSPy lacks this entirely it seems, so not a priority until the rest of the repo catches on)
@@ -82,7 +82,7 @@ class LlamaIndexRM(dspy.Retrieve):
         raw = self.retriever.retrieve(query)
 
         return [
-            dspy.Example(
+            og_dspy.Example(
                 text=result.text,
                 score=result.score,
             )

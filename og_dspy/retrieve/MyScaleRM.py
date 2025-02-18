@@ -209,7 +209,7 @@ class MyScaleRM(dspy.Retrieve):
         distance({self.vector_column}, {embeddings}) as dist FROM {self.database}.{self.table} ORDER BY dist LIMIT {k}
         """)
 
-        # Convert the metadata into strings to pass to dspy.Prediction
+        # Convert the metadata into strings to pass to og_dspy.Prediction
         results = []
         for row in result.named_results():
             if len(self.metadata_columns) == 1:

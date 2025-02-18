@@ -31,8 +31,8 @@ eval_score = evaluate(compiled_prompt_opt, devset=evalset[:EVAL_NUM], **kwargs)
 
 Note that this teleprompter takes in the following parameters:
 
-* prompt_model: The model used for prompt generation. When unspecified, defaults to the model set in settings (i.e., dspy.settings.configure(lm=task_model)).
-* task_model: The model used for prompt generation. When unspecified, defaults to the model set in settings (i.e., dspy.settings.configure(lm=task_model)).
+* prompt_model: The model used for prompt generation. When unspecified, defaults to the model set in settings (i.e., og_dspy.settings.configure(lm=task_model)).
+* task_model: The model used for prompt generation. When unspecified, defaults to the model set in settings (i.e., og_dspy.settings.configure(lm=task_model)).
 * metric: The task metric used for optimization.
 * num_candidates: The number of new prompts and sets of fewshot examples to generate and evaluate. Default=10.
 * init_temperature: The temperature used to generate new prompts. Higher roughly equals more creative. Default=1.0.
@@ -50,9 +50,9 @@ Note that this teleprompter takes in the following parameters:
 class BasicGenerateInstruction(Signature):
     """You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Your task is to propose an instruction that will lead a good language model to perform the task well. Don't be afraid to be creative."""
 
-    basic_instruction = dspy.InputField(desc="The initial instructions before optimization")
-    proposed_instruction = dspy.OutputField(desc="The improved instructions for the language model")
-    proposed_prefix_for_output_field = dspy.OutputField(
+    basic_instruction = og_dspy.InputField(desc="The initial instructions before optimization")
+    proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
+    proposed_prefix_for_output_field = og_dspy.OutputField(
         desc="The string at the end of the prompt, which will help the model start solving the task",
     )
 
@@ -60,10 +60,10 @@ class BasicGenerateInstruction(Signature):
 class BasicGenerateInstructionWithDataObservations(Signature):
     """You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English.  I will also give you some ``observations`` I have made about the dataset and task. Your task is to propose an instruction that will lead a good language model to perform the task well. Don't be afraid to be creative."""
 
-    basic_instruction = dspy.InputField(desc="The initial instructions before optimization")
-    observations = dspy.InputField(desc="Observations about the dataset and task")
-    proposed_instruction = dspy.OutputField(desc="The improved instructions for the language model")
-    proposed_prefix_for_output_field = dspy.OutputField(
+    basic_instruction = og_dspy.InputField(desc="The initial instructions before optimization")
+    observations = og_dspy.InputField(desc="Observations about the dataset and task")
+    proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
+    proposed_prefix_for_output_field = og_dspy.OutputField(
         desc="The string at the end of the prompt, which will help the model start solving the task",
     )
 
@@ -73,12 +73,12 @@ class BasicGenerateInstructionWithExamples(dspy.Signature):
 
     Your task is to propose an instruction that will lead a good language model to perform the task well. Don't be afraid to be creative."""
 
-    # attempted_instructions = dspy.InputField(format=str, desc="Previously attempted task instructions, along with their resulting validation score, and an example of the instruction in use on a sample from our dataset.")
-    basic_instruction = dspy.InputField(desc="The initial instructions before optimization")
-    # examples = dspy.InputField(format=dsp.passages2text, desc="Example(s) of the task")
-    examples = dspy.InputField(format=dsp.passages2text, desc="Example(s) of the task")
-    proposed_instruction = dspy.OutputField(desc="The improved instructions for the language model")
-    proposed_prefix_for_output_field = dspy.OutputField(
+    # attempted_instructions = og_dspy.InputField(format=str, desc="Previously attempted task instructions, along with their resulting validation score, and an example of the instruction in use on a sample from our dataset.")
+    basic_instruction = og_dspy.InputField(desc="The initial instructions before optimization")
+    # examples = og_dspy.InputField(format=dsp.passages2text, desc="Example(s) of the task")
+    examples = og_dspy.InputField(format=dsp.passages2text, desc="Example(s) of the task")
+    proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
+    proposed_prefix_for_output_field = og_dspy.OutputField(
         desc="The string at the end of the prompt, which will help the model start solving the task",
     )
 
@@ -88,11 +88,11 @@ class BasicGenerateInstructionWithExamplesAndDataObservations(dspy.Signature):
 
     Your task is to propose a new improved instruction and prefix for the output field that will lead a good language model to perform the task well. Don't be afraid to be creative."""
 
-    observations = dspy.InputField(desc="Observations about the dataset and task")
-    examples = dspy.InputField(format=dsp.passages2text, desc="Example(s) of the task")
-    basic_instruction = dspy.InputField(desc="The initial instructions before optimization")
-    proposed_instruction = dspy.OutputField(desc="The improved instructions for the language model")
-    proposed_prefix_for_output_field = dspy.OutputField(
+    observations = og_dspy.InputField(desc="Observations about the dataset and task")
+    examples = og_dspy.InputField(format=dsp.passages2text, desc="Example(s) of the task")
+    basic_instruction = og_dspy.InputField(desc="The initial instructions before optimization")
+    proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
+    proposed_prefix_for_output_field = og_dspy.OutputField(
         desc="The string at the end of the prompt, which will help the model start solving the task",
     )
 
@@ -100,8 +100,8 @@ class BasicGenerateInstructionWithExamplesAndDataObservations(dspy.Signature):
 class ObservationSummarizer(dspy.Signature):
     """Given a series of observations I have made about my dataset, please summarize them into a brief 2-3 sentence summary which highlights only the most important details."""
 
-    observations = dspy.InputField(desc="Observations I have made about my dataset")
-    summary = dspy.OutputField(
+    observations = og_dspy.InputField(desc="Observations I have made about my dataset")
+    summary = og_dspy.OutputField(
         desc="Two to Three sentence summary of only the most significant highlights of my observations",
     )
 
@@ -113,8 +113,8 @@ class DatasetDescriptor(dspy.Signature):
         """It will be useful to make an educated guess as to the nature of the task this dataset will enable. Don't be afraid to be creative"""
     )
 
-    examples = dspy.InputField(desc="Sample data points from the dataset")
-    observations = dspy.OutputField(desc="Somethings that holds true for most or all of the data you observed")
+    examples = og_dspy.InputField(desc="Sample data points from the dataset")
+    observations = og_dspy.OutputField(desc="Somethings that holds true for most or all of the data you observed")
 
 
 class DatasetDescriptorWithPriorObservations(dspy.Signature):
@@ -125,9 +125,9 @@ class DatasetDescriptorWithPriorObservations(dspy.Signature):
         """It will be useful to make an educated guess as to the nature of the task this dataset will enable. Don't be afraid to be creative"""
     )
 
-    examples = dspy.InputField(desc="Sample data points from the dataset")
-    prior_observations = dspy.InputField(desc="Some prior observations I made about the data")
-    observations = dspy.OutputField(
+    examples = og_dspy.InputField(desc="Sample data points from the dataset")
+    prior_observations = og_dspy.InputField(desc="Some prior observations I made about the data")
+    observations = og_dspy.OutputField(
         desc="Somethings that holds true for most or all of the data you observed or COMPLETE if you have nothing to add",
     )
 
@@ -148,8 +148,8 @@ class MIPRO(Teleprompter):
         self.num_candidates = num_candidates
         self.metric = metric
         self.init_temperature = init_temperature
-        self.prompt_model = prompt_model if prompt_model is not None else dspy.settings.lm
-        self.task_model = task_model if task_model is not None else dspy.settings.lm
+        self.prompt_model = prompt_model if prompt_model is not None else og_dspy.settings.lm
+        self.task_model = task_model if task_model is not None else og_dspy.settings.lm
         self.verbose = verbose
         self.track_stats = track_stats
         self.teacher_settings = teacher_settings
@@ -174,14 +174,14 @@ class MIPRO(Teleprompter):
 
     def _observe_data(self, trainset, max_iterations=10):
         upper_lim = min(len(trainset), self.view_data_batch_size)
-        observation = dspy.Predict(DatasetDescriptor, n=1, temperature=1.0)(examples=(trainset[0:upper_lim].__repr__()))
+        observation = og_dspy.Predict(DatasetDescriptor, n=1, temperature=1.0)(examples=(trainset[0:upper_lim].__repr__()))
         observations = observation["observations"]
 
         skips = 0
         iterations = 0
         for b in range(self.view_data_batch_size, len(trainset), self.view_data_batch_size):
             upper_lim = min(len(trainset), b + self.view_data_batch_size)
-            output = dspy.Predict(DatasetDescriptorWithPriorObservations, n=1, temperature=1.0)(
+            output = og_dspy.Predict(DatasetDescriptorWithPriorObservations, n=1, temperature=1.0)(
                 prior_observations=observations,
                 examples=(trainset[b:upper_lim].__repr__()),
             )
@@ -195,7 +195,7 @@ class MIPRO(Teleprompter):
                 break
             observations += output["observations"]
 
-        summary = dspy.Predict(ObservationSummarizer, n=1, temperature=1.0)(observations=observations)
+        summary = og_dspy.Predict(ObservationSummarizer, n=1, temperature=1.0)(observations=observations)
 
         return summary.summary
 
@@ -232,7 +232,7 @@ class MIPRO(Teleprompter):
 
     def _generate_first_N_candidates(  # noqa: N802
         self,
-        module: dspy.Module,
+        module: og_dspy.Module,
         N: int,  # noqa: N803
         view_data: bool,
         view_examples: bool,
@@ -245,7 +245,7 @@ class MIPRO(Teleprompter):
         if view_data:
             # Create data observations
             self.observations = None
-            with dspy.settings.context(lm=self.prompt_model):
+            with og_dspy.settings.context(lm=self.prompt_model):
                 self.observations = self._observe_data(devset).replace("Observations:", "").replace("Summary:", "")
 
         if view_examples:
@@ -276,14 +276,14 @@ class MIPRO(Teleprompter):
             basic_instruction = self._get_signature(predictor).instructions
             *_, last_field = self._get_signature(predictor).fields.values()
             basic_prefix = last_field.json_schema_extra["prefix"]
-            with dspy.settings.context(lm=self.prompt_model):
+            with og_dspy.settings.context(lm=self.prompt_model):
                 # Data & Examples
                 if view_data and view_examples:
                     if 1 not in example_sets[id(predictor)]:
                         raise ValueError("No examples found for the given predictor")
                     instruct = None
                     for i in range(1, self.num_candidates):
-                        new_instruct = dspy.Predict(
+                        new_instruct = og_dspy.Predict(
                             BasicGenerateInstructionWithExamplesAndDataObservations,
                             n=1,
                             temperature=self.init_temperature,
@@ -303,7 +303,7 @@ class MIPRO(Teleprompter):
                             )
                 # Just data
                 elif view_data:
-                    instruct = dspy.Predict(
+                    instruct = og_dspy.Predict(
                         BasicGenerateInstructionWithDataObservations,
                         n=N - 1,
                         temperature=self.init_temperature,
@@ -312,7 +312,7 @@ class MIPRO(Teleprompter):
                 elif view_examples:
                     instruct = None
                     for i in range(1, self.num_candidates):  # Note: skip over the first example set which is empty
-                        new_instruct = dspy.Predict(
+                        new_instruct = og_dspy.Predict(
                             BasicGenerateInstructionWithExamples,
                             n=1,
                             temperature=self.init_temperature,
@@ -331,7 +331,7 @@ class MIPRO(Teleprompter):
                             )
                 # Neither
                 else:
-                    instruct = dspy.Predict(BasicGenerateInstruction, n=N - 1, temperature=self.init_temperature)(
+                    instruct = og_dspy.Predict(BasicGenerateInstruction, n=N - 1, temperature=self.init_temperature)(
                         basic_instruction=basic_instruction,
                     )
 
@@ -348,7 +348,7 @@ class MIPRO(Teleprompter):
 
     def compile(
         self,
-        student: dspy.Program,
+        student: og_dspy.Program,
         *,
         trainset: list[dspy.Example],
         num_trials: int,
@@ -359,7 +359,7 @@ class MIPRO(Teleprompter):
         view_data=True,
         view_examples=True,
         requires_permission_to_run=True,
-    ) -> dspy.Program:
+    ) -> og_dspy.Program:
         # Define ANSI escape codes for colors
         RED = "\033[91m"
         YELLOW = "\033[93m"

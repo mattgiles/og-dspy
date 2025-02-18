@@ -23,13 +23,13 @@ class AWSModel(LM):
     The subclasses implement the abstract methods _create_body and _call_model
     and work in conjunction with the AWSProvider classes Bedrock and Sagemaker.
     Usage Example:
-        bedrock = dspy.Bedrock(region_name="us-west-2")
-        bedrock_mixtral = dspy.AWSMistral(bedrock, "mistral.mixtral-8x7b-instruct-v0:1", **kwargs)
-        bedrock_haiku = dspy.AWSAnthropic(bedrock, "anthropic.claude-3-haiku-20240307-v1:0", **kwargs)
-        bedrock_llama2 = dspy.AWSMeta(bedrock, "meta.llama2-13b-chat-v1", **kwargs)
+        bedrock = og_dspy.Bedrock(region_name="us-west-2")
+        bedrock_mixtral = og_dspy.AWSMistral(bedrock, "mistral.mixtral-8x7b-instruct-v0:1", **kwargs)
+        bedrock_haiku = og_dspy.AWSAnthropic(bedrock, "anthropic.claude-3-haiku-20240307-v1:0", **kwargs)
+        bedrock_llama2 = og_dspy.AWSMeta(bedrock, "meta.llama2-13b-chat-v1", **kwargs)
 
-        sagemaker = dspy.Sagemaker(region_name="us-west-2")
-        sagemaker_model = dspy.AWSMistral(sagemaker, "<YOUR_ENDPOINT_NAME>", **kwargs)
+        sagemaker = og_dspy.Sagemaker(region_name="us-west-2")
+        sagemaker_model = og_dspy.AWSMistral(sagemaker, "<YOUR_ENDPOINT_NAME>", **kwargs)
     """
 
     def __init__(

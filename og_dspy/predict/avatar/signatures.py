@@ -9,15 +9,15 @@ You will output action needed to accomplish the `Goal`. `Action` should have a t
 
 Note: You can opt to use no tools and provide the final answer directly. You can also one tool multiple times with different input queries if applicable."""
 
-    goal: str = dspy.InputField(
+    goal: str = og_dspy.InputField(
         prefix="Goal:",
         desc="Task to be accomplished.",
     )
-    tools: list[str] = dspy.InputField(
+    tools: list[str] = og_dspy.InputField(
         prefix="Tools:",
         desc="list of tools to use",
     )
-    action_1: Action = dspy.OutputField(
+    action_1: Action = og_dspy.OutputField(
         prefix="Action 1:",
         desc="1st action to take.",
     )

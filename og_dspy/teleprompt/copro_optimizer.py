@@ -18,7 +18,7 @@ eval_score = evaluate(compiled_prompt_opt, devset=evalset[:EVAL_NUM], **kwargs)
 
 Note that this teleprompter takes in the following parameters:
 
-* prompt_model: The model used for prompt generation. When unspecified, defaults to the model set in settings (ie. dspy.settings.configure(lm=task_model)).
+* prompt_model: The model used for prompt generation. When unspecified, defaults to the model set in settings (ie. og_dspy.settings.configure(lm=task_model)).
 * metric: The task metric used for optimization.
 * breadth: The number of new prompts to generate at each iteration. Default=10.
 * depth: The number of times we should ask our prompt model to generate new prompts, with the history of the past prompts as input. Default=3.
@@ -35,9 +35,9 @@ Note that this teleprompter takes in the following parameters:
 class BasicGenerateInstruction(Signature):
     """You are an instruction optimizer for large language models. I will give you a ``signature`` of fields (inputs and outputs) in English. Your task is to propose an instruction that will lead a good language model to perform the task well. Don't be afraid to be creative."""
 
-    basic_instruction = dspy.InputField(desc="The initial instructions before optimization")
-    proposed_instruction = dspy.OutputField(desc="The improved instructions for the language model")
-    proposed_prefix_for_output_field = dspy.OutputField(
+    basic_instruction = og_dspy.InputField(desc="The initial instructions before optimization")
+    proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
+    proposed_prefix_for_output_field = og_dspy.OutputField(
         desc="The string at the end of the prompt, which will help the model start solving the task",
     )
 
@@ -47,9 +47,9 @@ class GenerateInstructionGivenAttempts(dspy.Signature):
 
     Your task is to propose a new instruction that will lead a good language model to perform the task even better. Don't be afraid to be creative."""
 
-    attempted_instructions = dspy.InputField(format=dsp.passages2text)
-    proposed_instruction = dspy.OutputField(desc="The improved instructions for the language model")
-    proposed_prefix_for_output_field = dspy.OutputField(
+    attempted_instructions = og_dspy.InputField(format=dsp.passages2text)
+    proposed_instruction = og_dspy.OutputField(desc="The improved instructions for the language model")
+    proposed_prefix_for_output_field = og_dspy.OutputField(
         desc="The string at the end of the prompt, which will help the model start solving the task",
     )
 
@@ -75,7 +75,7 @@ class COPRO(Teleprompter):
         self.track_stats = track_stats
 
         if "verbose" in _kwargs:
-            dspy.logger.warning("DeprecationWarning: 'verbose' has been deprecated. To see all information for debugging, use 'dspy.set_log_level('debug')'. In the future this will raise an error.")
+            og_dspy.logger.warning("DeprecationWarning: 'verbose' has been deprecated. To see all information for debugging, use 'dspy.set_log_level('debug')'. In the future this will raise an error.")
 
     def _check_candidates_equal(self, candidate1, candidate2):
         for p1, p2 in zip(candidate1["program"].predictors(), candidate2["program"].predictors()):
@@ -110,8 +110,8 @@ class COPRO(Teleprompter):
     def _print_signature(self, predictor):
         signature = self._get_signature(predictor)
 
-        dspy.logger.debug(f"i: {signature.instructions}")
-        dspy.logger.debug(f"p: {list(signature.fields.values())[-1].json_schema_extra['prefix']}")
+        og_dspy.logger.debug(f"i: {signature.instructions}")
+        og_dspy.logger.debug(f"p: {list(signature.fields.values())[-1].json_schema_extra['prefix']}")
 
     def _get_signature(self, predictor):
         if hasattr(predictor, "extended_signature"):
@@ -161,14 +161,14 @@ class COPRO(Teleprompter):
             basic_instruction = self._get_signature(predictor).instructions
             basic_prefix = self._get_signature(predictor).fields[last_key].json_schema_extra["prefix"]
             if self.prompt_model:
-                with dspy.settings.context(lm=self.prompt_model):
-                    instruct = dspy.Predict(
+                with og_dspy.settings.context(lm=self.prompt_model):
+                    instruct = og_dspy.Predict(
                         BasicGenerateInstruction,
                         n=self.breadth - 1,
                         temperature=self.init_temperature,
                     )(basic_instruction=basic_instruction)
             else:
-                instruct = dspy.Predict(
+                instruct = og_dspy.Predict(
                     BasicGenerateInstruction,
                     n=self.breadth - 1,
                     temperature=self.init_temperature,
@@ -180,7 +180,7 @@ class COPRO(Teleprompter):
             evaluated_candidates[id(predictor)] = {}
 
         if self.prompt_model:
-            dspy.logger.debug(f"{self.prompt_model.inspect_history(n=1)}")
+            og_dspy.logger.debug(f"{self.prompt_model.inspect_history(n=1)}")
 
         latest_candidates = candidates
         all_candidates = candidates
@@ -191,7 +191,7 @@ class COPRO(Teleprompter):
         for d in range(
             self.depth,
         ):  # TODO: fix this so that we eval the new batch of predictors with the new best following predictors
-            dspy.logger.info(f"Iteration Depth: {d+1}/{self.depth}.")
+            og_dspy.logger.info(f"Iteration Depth: {d+1}/{self.depth}.")
 
             latest_scores = []
 
@@ -222,18 +222,18 @@ class COPRO(Teleprompter):
 
                     # Score the instruction / prefix
                     for i, predictor in enumerate(module_clone.predictors()):
-                        dspy.logger.debug(f"Predictor {i+1}")
+                        og_dspy.logger.debug(f"Predictor {i+1}")
                         self._print_signature(predictor)
-                    dspy.logger.info(
+                    og_dspy.logger.info(
                         f"At Depth {d+1}/{self.depth}, Evaluating Prompt Candidate #{c_i+1}/{len(candidates_)} for Predictor {p_i+1} of {len(module.predictors())}.",
                     )
                     score = evaluate(module_clone, devset=trainset, **eval_kwargs)
                     if self.prompt_model:
-                        dspy.logger.debug(f"prompt_model.inspect_history(n=1) {self.prompt_model.inspect_history(n=1)}")
+                        og_dspy.logger.debug(f"prompt_model.inspect_history(n=1) {self.prompt_model.inspect_history(n=1)}")
                     total_calls += 1
 
                     replace_entry = True
-                    dspy.logger.debug(f"(instruction, prefix) {(instruction, prefix)}")
+                    og_dspy.logger.debug(f"(instruction, prefix) {(instruction, prefix)}")
                     if (instruction, prefix) in evaluated_candidates[id(p_old)]:
                         if evaluated_candidates[id(p_old)][(instruction, prefix)]["score"] >= score:
                             replace_entry = False
@@ -269,12 +269,12 @@ class COPRO(Teleprompter):
                 )
                 self._set_signature(p_new, updated_signature)
 
-                dspy.logger.debug(
+                og_dspy.logger.debug(
                     f"Updating Predictor {id(p_old)} to:\ni: {best_candidate['instruction']}\np: {best_candidate['prefix']}",
                 )
-                dspy.logger.debug("Full predictor with update: ")
+                og_dspy.logger.debug("Full predictor with update: ")
                 for i, predictor in enumerate(module_clone.predictors()):
-                    dspy.logger.debug(f"Predictor {i}")
+                    og_dspy.logger.debug(f"Predictor {i}")
                     self._print_signature(predictor)
 
             if d == self.depth - 1:
@@ -307,21 +307,21 @@ class COPRO(Teleprompter):
 
                 # Generate next batch of potential prompts to optimize, with previous attempts as input
                 if self.prompt_model:
-                    with dspy.settings.context(lm=self.prompt_model):
-                        instr = dspy.Predict(
+                    with og_dspy.settings.context(lm=self.prompt_model):
+                        instr = og_dspy.Predict(
                             GenerateInstructionGivenAttempts,
                             n=self.breadth,
                             temperature=self.init_temperature,
                         )(attempted_instructions=attempts)
                 else:
-                    instr = dspy.Predict(
+                    instr = og_dspy.Predict(
                         GenerateInstructionGivenAttempts,
                         n=self.breadth,
                         temperature=self.init_temperature,
                     )(attempted_instructions=attempts)
 
                 if self.prompt_model:
-                    dspy.logger.debug(f"(self.prompt_model.inspect_history(n=1)) {self.prompt_model.inspect_history(n=1)}")
+                    og_dspy.logger.debug(f"(self.prompt_model.inspect_history(n=1)) {self.prompt_model.inspect_history(n=1)}")
                 # Get candidates for each predictor
                 new_candidates[id(p_base)] = instr.completions
                 all_candidates[id(p_base)].proposed_instruction.extend(instr.completions.proposed_instruction)
@@ -330,7 +330,7 @@ class COPRO(Teleprompter):
                 )
 
             if self.prompt_model:
-                dspy.logger.debug(f"{self.prompt_model.inspect_history(n=1)}")
+                og_dspy.logger.debug(f"{self.prompt_model.inspect_history(n=1)}")
             latest_candidates = new_candidates
 
         candidates = []

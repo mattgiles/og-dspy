@@ -166,7 +166,7 @@ class BootstrapFinetune(Teleprompter):
             best_ckpt_path = finetune_hf(training_data_path, target, compiler_config_)
 
             print(f"#> Best checkpoint path: {best_ckpt_path} for {name}")
-            finetune_models[name] = dsp.HFModel(model=target, checkpoint=best_ckpt_path)  # best_ckpt_path
+            finetune_models[name] = og_dsp.HFModel(model=target, checkpoint=best_ckpt_path)  # best_ckpt_path
 
         #
         # Set the LMs to the finetuned ones, per module

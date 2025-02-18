@@ -39,7 +39,7 @@ class ReAct(Module):
             "Thought can reason about the current situation, and Action can be the following types:\n",
         ])
 
-        self.tools["Finish"] = dspy.Example(
+        self.tools["Finish"] = og_dspy.Example(
             name="Finish",
             input_variable=outputs_.strip("`"),
             desc=f"returns the final {outputs_} and finishes the task",
@@ -63,7 +63,7 @@ class ReAct(Module):
             signature_dict[key] = val
 
         for j in range(1, iters + 1):
-            IOField = dspy.OutputField if j == iters else dspy.InputField
+            IOField = og_dspy.OutputField if j == iters else og_dspy.InputField
 
             signature_dict[f"Thought_{j}"] = IOField(
                 prefix=f"Thought {j}:",
@@ -114,7 +114,7 @@ class ReAct(Module):
         args = {key: kwargs[key] for key in self.input_fields.keys() if key in kwargs}
 
         for hop in range(self.max_iters):
-            # with dspy.settings.context(show_guidelines=(i <= 2)):
+            # with og_dspy.settings.context(show_guidelines=(i <= 2)):
             output = self.react[hop](**args)
             output[f'Action_{hop + 1}'] = output[f'Action_{hop + 1}'].split('\n')[0]
 
@@ -125,4 +125,4 @@ class ReAct(Module):
         observations = [args[key] for key in args if key.startswith("Observation")]
 
         # assumes only 1 output field for now - TODO: handling for multiple output fields
-        return dspy.Prediction(observations=observations, **{list(self.output_fields.keys())[0]: action_val or ""})
+        return og_dspy.Prediction(observations=observations, **{list(self.output_fields.keys())[0]: action_val or ""})

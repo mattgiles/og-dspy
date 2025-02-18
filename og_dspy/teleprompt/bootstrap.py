@@ -14,7 +14,7 @@ from .vanilla import LabeledFewShot
 # TODO: metrics should return an object with __bool__ basically, but fine if they're more complex.
 # They can also be sortable.
 
-# TODO: Switch here from og_dsp.Example to dspy.Example. Right now, it's okay because it's internal only (predictors).
+# TODO: Switch here from og_dsp.Example to og_dspy.Example. Right now, it's okay because it's internal only (predictors).
 # NOTE: Notice the places where we don't shuffle examples. I do like that this one doesn't shuffle.
 # Other ones that consider options may want to use both unshuffled and then shuffle a few times, when
 # considering candidates.
@@ -119,7 +119,7 @@ class BootstrapFewShot(Teleprompter):
                     f"{type(predictor1.signature)} != {type(predictor2.signature)}"
                     )
             else:
-                # fallback in case if .equals is not implemented (e.g. dsp.Prompt)
+                # fallback in case if .equals is not implemented (e.g. og_dsp.Prompt)
                 assert predictor1.signature == predictor2.signature, (
                     f"Student and teacher must have the same signatures. "
                     f"{type(predictor1.signature)} != {type(predictor2.signature)}"
@@ -177,18 +177,18 @@ class BootstrapFewShot(Teleprompter):
         predictor_cache = {}
 
         try:
-            with dsp.settings.context(trace=[], **self.teacher_settings):
-                lm = dsp.settings.lm
+            with og_dsp.settings.context(trace=[], **self.teacher_settings):
+                lm = og_dsp.settings.lm
                 lm = lm.copy(temperature=0.7 + 0.001 * round_idx) if round_idx > 0 else lm
                 new_settings = dict(lm=lm) if round_idx > 0 else {}
 
-                with dsp.settings.context(**new_settings):
+                with og_dsp.settings.context(**new_settings):
                     for name, predictor in teacher.named_predictors():
                         predictor_cache[name] = predictor.demos
                         predictor.demos = [x for x in predictor.demos if x != example]
 
                     prediction = teacher(**example.inputs())
-                    trace = dsp.settings.trace
+                    trace = og_dsp.settings.trace
 
                     for name, predictor in teacher.named_predictors():
                         predictor.demos = predictor_cache[name]
@@ -208,7 +208,7 @@ class BootstrapFewShot(Teleprompter):
                 current_error_count = self.error_count
             if current_error_count >= self.max_errors:
                 raise e
-            dspy.logger.error(f"Failed to run or to evaluate example {example} with {self.metric} due to {e}.")
+            og_dspy.logger.error(f"Failed to run or to evaluate example {example} with {self.metric} due to {e}.")
 
         if success:
             for step in trace:
@@ -246,7 +246,7 @@ class BootstrapFewShot(Teleprompter):
 
             raw_demos = rng.sample(raw_demos, sample_size)
 
-            if dspy.settings.release >= 20230928:
+            if og_dspy.settings.release >= 20230928:
                 predictor.demos = raw_demos + augmented_demos
             else:
                 predictor.demos = augmented_demos + raw_demos

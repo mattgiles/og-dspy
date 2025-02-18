@@ -39,20 +39,20 @@ class ProgramOfThought(Module):
         )
         instr = "\n".join(instr)
 
-        self.code_generate = dspy.ChainOfThought(
-            dspy.Signature(
+        self.code_generate = og_dspy.ChainOfThought(
+            og_dspy.Signature(
                 self._generate_signature("generate").fields,
                 self._generate_instruction("generate"),
             ),
         )
-        self.code_regenerate = dspy.ChainOfThought(
-            dspy.Signature(
+        self.code_regenerate = og_dspy.ChainOfThought(
+            og_dspy.Signature(
                 self._generate_signature("regenerate").fields,
                 self._generate_instruction("regenerate"),
             ),
         )
-        self.generate_answer = dspy.ChainOfThought(
-            dspy.Signature(
+        self.generate_answer = og_dspy.ChainOfThought(
+            og_dspy.Signature(
                 self._generate_signature("answer").fields,
                 self._generate_instruction("answer"),
             ),
@@ -61,35 +61,35 @@ class ProgramOfThought(Module):
         signature_dict = dict(self.input_fields)
         fields_for_mode = {
             "generate": {
-                "generated_code": dspy.OutputField(
+                "generated_code": og_dspy.OutputField(
                     prefix="Code:",
                     desc="python code that answers the question",
                     format=str,
                 ),
             },
             "regenerate": {
-                "previous_code": dspy.InputField(
+                "previous_code": og_dspy.InputField(
                     prefix="Previous Code:",
                     desc="previously-generated python code that errored",
                     format=str,
                 ),
-                "error": dspy.InputField(
+                "error": og_dspy.InputField(
                     prefix="Error:",
                     desc="error message from previously-generated python code",
                 ),
-                "generated_code": dspy.OutputField(
+                "generated_code": og_dspy.OutputField(
                     prefix="Code:",
                     desc="python code that answers the question",
                     format=str,
                 ),
             },
             "answer": {
-                "final_generated_code": dspy.InputField(
+                "final_generated_code": og_dspy.InputField(
                     prefix="Code:",
                     desc="python code that answers the question",
                     format=str,
                 ),
-                "code_output": dspy.InputField(
+                "code_output": og_dspy.InputField(
                     prefix="Code Output:",
                     desc="output of previously-generated python code",
                 ),
@@ -97,7 +97,7 @@ class ProgramOfThought(Module):
             },
         }
         signature_dict.update(fields_for_mode[mode])
-        return dspy.Signature(signature_dict)
+        return og_dspy.Signature(signature_dict)
 
     def _generate_instruction(self, mode):
         mode_inputs = ", ".join(

@@ -18,15 +18,15 @@ class ChainOfThought(Module):
         *_keys, last_key = signature.output_fields.keys()
 
         prefix = "Reasoning: Let's think step by step in order to"
-        if dspy.settings.experimental:
+        if og_dspy.settings.experimental:
             desc = "${produce the output fields}. We ..."
         else:
             desc = f"${{produce the {last_key}}}. We ..."
 
-        rationale_type = rationale_type or dspy.OutputField(prefix=prefix, desc=desc)
+        rationale_type = rationale_type or og_dspy.OutputField(prefix=prefix, desc=desc)
         # Add "rationale" field to the output signature.
         extended_signature = signature.prepend("rationale", rationale_type, type_=str)
-        self._predict = dspy.Predict(extended_signature, **config)
+        self._predict = og_dspy.Predict(extended_signature, **config)
         self._predict.extended_signature = extended_signature
 
     def forward(self, **kwargs):

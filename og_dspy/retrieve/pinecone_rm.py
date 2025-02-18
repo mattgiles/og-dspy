@@ -52,14 +52,14 @@ class PineconeRM(Retrieve):
         k (int, optional): The number of top passages to retrieve. Defaults to 3.
 
     Returns:
-        dspy.Prediction: An object containing the retrieved passages.
+        og_dspy.Prediction: An object containing the retrieved passages.
 
     Examples:
         Below is a code snippet that shows how to use this as the default retriever:
         ```python
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         retriever_model = PineconeRM(openai.api_key)
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         ```
 
         Below is a code snippet that shows how to use this in the forward() function of a module
@@ -230,7 +230,7 @@ class PineconeRM(Retrieve):
             query_or_queries (Union[str, List[str]]): The query or queries to search for.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         queries = (
             [query_or_queries]

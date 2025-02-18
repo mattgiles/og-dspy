@@ -54,7 +54,7 @@ class Retrieve(Parameter):
         # # print(queries)
         # # TODO: Consider removing any quote-like markers that surround the query too.
         # k = k if k is not None else self.k
-        # passages = dsp.retrieveEnsemble(queries, k=k,**kwargs)
+        # passages = og_dsp.retrieveEnsemble(queries, k=k,**kwargs)
         # return Prediction(passages=passages)
         queries = (
             [query_or_queries]
@@ -67,10 +67,10 @@ class Retrieve(Parameter):
         # TODO: Consider removing any quote-like markers that surround the query too.
         k = k if k is not None else self.k
         if not with_metadata:
-            passages = dsp.retrieveEnsemble(queries, k=k, by_prob=by_prob, **kwargs)
+            passages = og_dsp.retrieveEnsemble(queries, k=k, by_prob=by_prob, **kwargs)
             return Prediction(passages=passages)
         else:
-            passages = dsp.retrieveEnsemblewithMetadata(
+            passages = og_dsp.retrieveEnsemblewithMetadata(
                 queries, k=k, by_prob=by_prob, **kwargs,
             )
             if isinstance(passages[0], List):
@@ -140,10 +140,10 @@ class RetrieveThenRerank(Parameter):
         # TODO: Consider removing any quote-like markers that surround the query too.
         k = k if k is not None else self.k
         if not with_metadata:
-            passages = dsp.retrieveRerankEnsemble(queries, k=k, **kwargs)
+            passages = og_dsp.retrieveRerankEnsemble(queries, k=k, **kwargs)
             return passages
         else:
-            passages = dsp.retrieveRerankEnsemblewithMetadata(queries, k=k, **kwargs)
+            passages = og_dsp.retrieveRerankEnsemblewithMetadata(queries, k=k, **kwargs)
             if isinstance(passages[0], List):
                 pred_returns = []
                 for query_passages in passages:

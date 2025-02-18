@@ -9,17 +9,17 @@ logger = logging.getLogger(__name__)
 
 def retrieve(query: str, k: int, **kwargs) -> list[str]:
     """Retrieves passages from the RM for the query and returns the top k passages."""
-    if not dsp.settings.rm:
+    if not og_dsp.settings.rm:
         raise AssertionError("No RM is loaded.")
-    passages = dsp.settings.rm(query, k=k, **kwargs)
+    passages = og_dsp.settings.rm(query, k=k, **kwargs)
     if not isinstance(passages, Iterable):
         # it's not an iterable yet; make it one.
-        # TODO: we should unify the type signatures of dspy.Retriever
+        # TODO: we should unify the type signatures of og_dspy.Retriever
         passages = [passages]
     passages = [psg.long_text for psg in passages]
 
-    if dsp.settings.reranker:
-        passages_cs_scores = dsp.settings.reranker(query, passages)
+    if og_dsp.settings.reranker:
+        passages_cs_scores = og_dsp.settings.reranker(query, passages)
         passages_cs_scores_sorted = np.argsort(passages_cs_scores)[::-1]
         passages = [passages[idx] for idx in passages_cs_scores_sorted]
 
@@ -28,25 +28,25 @@ def retrieve(query: str, k: int, **kwargs) -> list[str]:
 def retrievewithMetadata(query: str, k: int, **kwargs) -> list[str]:
     """Retrieves passages from the RM for the query and returns the top k passages."""
 
-    if not dsp.settings.rm:
+    if not og_dsp.settings.rm:
         raise AssertionError("No RM is loaded.")
-    passages = dsp.settings.rm(query, k=k, **kwargs)
+    passages = og_dsp.settings.rm(query, k=k, **kwargs)
     if not isinstance(passages, Iterable):
         # it's not an iterable yet; make it one.
-        # TODO: we should unify the type signatures of dspy.Retriever
+        # TODO: we should unify the type signatures of og_dspy.Retriever
         passages = [passages]
 
     return passages
 
 
 def retrieveRerankEnsemble(queries: list[str], k: int,**kwargs) -> list[str]:
-    if not (dsp.settings.rm and dsp.settings.reranker):
+    if not (dsp.settings.rm and og_dsp.settings.reranker):
         raise AssertionError("Both RM and Reranker are needed to retrieve & re-rank.")
     queries = [q for q in queries if q]
     passages = {}
     for query in queries:
-        retrieved_passages = dsp.settings.rm(query, k=k*3,**kwargs)
-        passages_cs_scores = dsp.settings.reranker(query, [psg.long_text for psg in retrieved_passages])
+        retrieved_passages = og_dsp.settings.rm(query, k=k*3,**kwargs)
+        passages_cs_scores = og_dsp.settings.reranker(query, [psg.long_text for psg in retrieved_passages])
         for idx in np.argsort(passages_cs_scores)[::-1]:
             psg = retrieved_passages[idx]
             passages[psg.long_text] = passages.get(psg.long_text, []) + [
@@ -58,14 +58,14 @@ def retrieveRerankEnsemble(queries: list[str], k: int,**kwargs) -> list[str]:
     return [text for _, text in sorted(passages, reverse=True)[:k]]
 
 def retrieveRerankEnsemblewithMetadata(queries: list[str], k: int, **kwargs) -> list[str]:
-    if not (dsp.settings.rm and dsp.settings.reranker):
+    if not (dsp.settings.rm and og_dsp.settings.reranker):
         raise AssertionError("Both RM and Reranker are needed to retrieve & re-rank.")
     queries = [q for q in queries if q]
     all_queries_passages = []
     for query in queries:
         passages = []
-        retrieved_passages = dsp.settings.rm(query, k=k * 3, **kwargs)
-        passages_cs_scores = dsp.settings.reranker(
+        retrieved_passages = og_dsp.settings.rm(query, k=k * 3, **kwargs)
+        passages_cs_scores = og_dsp.settings.reranker(
             query, passages=[psg["long_text"] for psg in retrieved_passages],
         )
         for idx in np.argsort(passages_cs_scores)[::-1][:k]:
@@ -83,9 +83,9 @@ def retrieveEnsemble(queries: list[str], k: int, by_prob: bool = True,**kwargs) 
     """Retrieves passages from the RM for each query in queries and returns the top k passages
     based on the probability or score.
     """
-    if not dsp.settings.rm:
+    if not og_dsp.settings.rm:
         raise AssertionError("No RM is loaded.")
-    if dsp.settings.reranker:
+    if og_dsp.settings.reranker:
         return retrieveRerankEnsemble(queries, k, **kwargs)
     queries = [q for q in queries if q]
 
@@ -94,7 +94,7 @@ def retrieveEnsemble(queries: list[str], k: int, by_prob: bool = True,**kwargs) 
 
     passages = {}
     for q in queries:
-        for psg in dsp.settings.rm(q, k=k * 3,**kwargs):
+        for psg in og_dsp.settings.rm(q, k=k * 3,**kwargs):
             if by_prob:
                 passages[psg.long_text] = passages.get(psg.long_text, 0.0) + psg.prob
             else:
@@ -114,9 +114,9 @@ def retrieveEnsemblewithMetadata(
     based on the probability or score.
     """
 
-    if not dsp.settings.rm:
+    if not og_dsp.settings.rm:
         raise AssertionError("No RM is loaded.")
-    if not dsp.settings.reranker:
+    if not og_dsp.settings.reranker:
         return retrieveRerankEnsemblewithMetadata(queries=queries,k=k)
 
     queries = [q for q in queries if q]
@@ -126,7 +126,7 @@ def retrieveEnsemblewithMetadata(
     all_queries_passages = []
     for q in queries:
         passages = {}
-        retrieved_passages = dsp.settings.rm(q, k=k * 3, **kwargs)
+        retrieved_passages = og_dsp.settings.rm(q, k=k * 3, **kwargs)
         for idx, psg in enumerate(retrieved_passages):
             if by_prob:
                 passages[(idx, psg.long_text)] = (

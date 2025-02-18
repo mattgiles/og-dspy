@@ -30,7 +30,7 @@ class EpsillaRM(dspy.Retrieve):
 
         super().__init__(k=k)
 
-    def forward(self, query_or_queries: Union[str, List[str]], k: Union[int, None] = None, **kwargs) -> dspy.Prediction:  # noqa: ARG002
+    def forward(self, query_or_queries: Union[str, List[str]], k: Union[int, None] = None, **kwargs) -> og_dspy.Prediction:  # noqa: ARG002
         queries = [query_or_queries] if isinstance(query_or_queries, str) else query_or_queries
         queries = [q for q in queries if q]
         limit = k if k else self.k
@@ -42,4 +42,4 @@ class EpsillaRM(dspy.Retrieve):
             for result in result_dict:
                 passages[result[self.page_content]] += result["@distance"]
         sorted_passages = sorted(passages.items(), key=lambda x: x[1], reverse=False)[:limit]
-        return dspy.Prediction(passages=[dotdict({"long_text": passage}) for passage, _ in sorted_passages])
+        return og_dspy.Prediction(passages=[dotdict({"long_text": passage}) for passage, _ in sorted_passages])

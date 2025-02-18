@@ -54,10 +54,10 @@ class DatabricksRM(dspy.Retrieve):
             "text_vector": "array<float>"}
         )
 
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         retriever_model = DatabricksRM(databricks_index_name = "your_index_name",
         databricks_endpoint = "your_databricks_host_url", databricks_token = "your_databricks_token", columns= ["id", "field2", "field3", "text_vector"], k=3)
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         ```
 
         Below is a code snippet that shows how to query the Databricks Direct Vector Access Index using the forward() function.
@@ -151,7 +151,7 @@ class DatabricksRM(dspy.Retrieve):
         query: Union[str, List[float]],
         query_type: str = "text",
         filters_json: str = None,
-    ) -> dspy.Prediction:
+    ) -> og_dspy.Prediction:
         """Search with Databricks Vector Search Client for self.k top results for query
 
         Args:
@@ -159,7 +159,7 @@ class DatabricksRM(dspy.Retrieve):
             query_type (str): 'vector' for Direct Vector Access Index and Delta Sync Index using self-managed vectors or 'text' for Delta Sync Index using model endpoint.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved results.
+            og_dspy.Prediction: An object containing the retrieved results.
         """
         headers = {
             "Authorization": f"Bearer {self.databricks_token}",

@@ -32,7 +32,7 @@ class FaissRM(dspy.Retrieve):
         k (int, optional): The number of top passages to retrieve. Defaults to 3.
 
     Returns:
-        dspy.Prediction: An object containing the retrieved passages.
+        og_dspy.Prediction: An object containing the retrieved passages.
 
     Examples:
         Below is a code snippet that shows how to use this as the default retriver:
@@ -54,8 +54,8 @@ class FaissRM(dspy.Retrieve):
         ]
 
         frm = faiss_rm.FaissRM(document_chunks)
-        turbo = dspy.OpenAI(model="gpt-3.5-turbo")
-        dspy.settings.configure(lm=turbo, rm=frm)
+        turbo = og_dspy.OpenAI(model="gpt-3.5-turbo")
+        og_dspy.settings.configure(lm=turbo, rm=frm)
         print(frm(["I am in the mood for Chinese food"]))
         ```
 
@@ -80,7 +80,7 @@ class FaissRM(dspy.Retrieve):
         embeddings = self._vectorizer(document_chunks)
         xb = np.array(embeddings)
         d = len(xb[0])
-        dspy.logger.info(f"FaissRM: embedding size={d}")
+        og_dspy.logger.info(f"FaissRM: embedding size={d}")
         if len(xb) < 100:
             self._faiss_index = faiss.IndexFlatL2(d)
             self._faiss_index.add(xb)
@@ -92,7 +92,7 @@ class FaissRM(dspy.Retrieve):
             self._faiss_index.train(xb)
             self._faiss_index.add(xb)
 
-        dspy.logger.info(f"{self._faiss_index.ntotal} vectors in faiss index")
+        og_dspy.logger.info(f"{self._faiss_index.ntotal} vectors in faiss index")
         self._document_chunks = document_chunks  # save the input document chunks
 
         super().__init__(k=k)
@@ -101,19 +101,19 @@ class FaissRM(dspy.Retrieve):
         for i in range(len(queries)):
             indices = index_list[i]
             distances = distance_list[i]
-            dspy.logger.debug(f"Query: {queries[i]}")
+            og_dspy.logger.debug(f"Query: {queries[i]}")
             for j in range(len(indices)):
-                dspy.logger.debug(f"    Hit {j} = {indices[j]}/{distances[j]}: {self._document_chunks[indices[j]]}")
+                og_dspy.logger.debug(f"    Hit {j} = {indices[j]}/{distances[j]}: {self._document_chunks[indices[j]]}")
         return
 
-    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int] = None, **kwargs) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int] = None, **kwargs) -> og_dspy.Prediction:
         """Search the faiss index for k or self.k top passages for query.
 
         Args:
             query_or_queries (Union[str, List[str]]): The query or queries to search for.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         queries = [query_or_queries] if isinstance(query_or_queries, str) else query_or_queries
         queries = [q for q in queries if q]  # Filter empty queries

@@ -13,16 +13,16 @@ from og_dspy.signatures.field import OldInputField, OldOutputField
 from og_dspy.signatures.signature import infer_prefix
 
 # TODO: This class is currently hard to test, because it hardcodes gpt-4 usage:
-# gpt4T = dspy.OpenAI(model='gpt-4-1106-preview', max_tokens=4000, model_type='chat')
+# gpt4T = og_dspy.OpenAI(model='gpt-4-1106-preview', max_tokens=4000, model_type='chat')
 
 class Template2Signature(dspy.Signature):
     """You are a processor for prompts. I will give you a prompt template (Python f-string) for an arbitrary task for other LMs.
 Your job is to prepare three modular pieces: (i) any essential task instructions or guidelines, (ii) a list of variable names for inputs, (iv) the variable name for output."""
 
-    template = dspy.InputField(format=lambda x: f"```\n\n{x.strip()}\n\n```\n\nLet's now prepare three modular pieces.")
-    essential_instructions = dspy.OutputField()
-    input_keys = dspy.OutputField(desc='comma-separated list of valid variable names')
-    output_key = dspy.OutputField(desc='a valid variable name')
+    template = og_dspy.InputField(format=lambda x: f"```\n\n{x.strip()}\n\n```\n\nLet's now prepare three modular pieces.")
+    essential_instructions = og_dspy.OutputField()
+    input_keys = og_dspy.OutputField(desc='comma-separated list of valid variable names')
+    output_key = og_dspy.OutputField(desc='a valid variable name')
 
 
 class ShallowCopyOnly:
@@ -73,21 +73,21 @@ class LangChainPredict(Predict, Runnable, metaclass=LangChainPredictMetaClass):
         return self.forward(**kwargs)
 
     def _build_signature(self, template):
-        gpt4T = dspy.OpenAI(model='gpt-4-1106-preview', max_tokens=4000, model_type='chat')
+        gpt4T = og_dspy.OpenAI(model='gpt-4-1106-preview', max_tokens=4000, model_type='chat')
 
-        with dspy.context(lm=gpt4T): parts = dspy.Predict(Template2Signature)(template=template)
+        with og_dspy.context(lm=gpt4T): parts = og_dspy.Predict(Template2Signature)(template=template)
 
         inputs = {k.strip(): OldInputField() for k in parts.input_keys.split(',')}
         outputs = {k.strip(): OldOutputField() for k in parts.output_key.split(',')}
 
         for k, v in inputs.items():
-            v.finalize(k, infer_prefix(k))  # TODO: Generate from the template at dspy.Predict(Template2Signature)
+            v.finalize(k, infer_prefix(k))  # TODO: Generate from the template at og_dspy.Predict(Template2Signature)
 
         for k, v in outputs.items():
             output_field_key = k
             v.finalize(k, infer_prefix(k))
 
-        return dsp.Template(parts.essential_instructions, **inputs, **outputs), output_field_key
+        return og_dsp.Template(parts.essential_instructions, **inputs, **outputs), output_field_key
 
     def forward(self, **kwargs):
         # Extract the three privileged keyword arguments.
@@ -106,10 +106,10 @@ class LangChainPredict(Predict, Runnable, metaclass=LangChainPredictMetaClass):
         # print('#> len(demos) =', len(demos))
         # print(f"#> {prompt}")
         # print(f"#> PRED = {content}\n\n\n")
-        dspy.settings.langchain_history.append((prompt, pred))
+        og_dspy.settings.langchain_history.append((prompt, pred))
 
-        if dsp.settings.trace is not None:
-            trace = dsp.settings.trace
+        if og_dsp.settings.trace is not None:
+            trace = og_dsp.settings.trace
             trace.append((self, {**kwargs}, pred))
 
         return output
@@ -128,12 +128,12 @@ class LangChainPredict(Predict, Runnable, metaclass=LangChainPredictMetaClass):
 
 #         signature = self.signature
 #         *keys, last_key = signature.kwargs.keys()
-#         rationale_type = dsp.Type(prefix="Reasoning: Let's think step by step in order to",
+#         rationale_type = og_dsp.Type(prefix="Reasoning: Let's think step by step in order to",
 #                                   desc="${produce the " + last_key + "}. We ...")
 
 #         extended_kwargs = {key: signature.kwargs[key] for key in keys}
 #         extended_kwargs.update({"rationale": rationale_type, last_key: signature.kwargs[last_key]})
-#         self.extended_signature = dsp.Template(signature.instructions, **extended_kwargs)
+#         self.extended_signature = og_dsp.Template(signature.instructions, **extended_kwargs)
 
 #     def forward(self, **kwargs):
 #         signature = self.extended_signature
@@ -158,7 +158,7 @@ class LangChainModule(dspy.Module):
         try: output = output.content
         except Exception: pass
 
-        return dspy.Prediction({k: output for k in output_keys})
+        return og_dspy.Prediction({k: output for k in output_keys})
 
     def invoke(self, d, *args, **kwargs):
         return self.forward(**d).output

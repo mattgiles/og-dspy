@@ -14,10 +14,10 @@ import og_dsp
 from og_dspy.signatures.field import InputField, OutputField, new_to_old_field
 
 
-def signature_to_template(signature, adapter=None) -> dsp.Template:
+def signature_to_template(signature, adapter=None) -> og_dsp.Template:
     """Convert from new to legacy format."""
 
-    adapter = adapter or dsp.Template
+    adapter = adapter or og_dsp.Template
 
     return adapter(
         signature.instructions,

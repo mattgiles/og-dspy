@@ -110,7 +110,7 @@ def dummy_rm(passages=()) -> callable:
         query_vec = vectorizer([query])[0]
         scores = passage_vecs @ query_vec
         largest_idx = (-scores).argsort()[:k]
-        # return dspy.Prediction(passages=[passages[i] for i in largest_idx])
+        # return og_dspy.Prediction(passages=[passages[i] for i in largest_idx])
         return [dotdict(dict(long_text=passages[i])) for i in largest_idx]
 
     return inner

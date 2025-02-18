@@ -91,7 +91,7 @@ class Predict(Module, Parameter):
         return self.forward(**kwargs)
 
     def forward(self, **kwargs):
-        assert not dsp.settings.compiling, "It's no longer ever the case that .compiling is True"
+        assert not og_dsp.settings.compiling, "It's no longer ever the case that .compiling is True"
 
         # Extract the three privileged keyword arguments.
         new_signature = ensure_signature(kwargs.pop("new_signature", None))
@@ -100,7 +100,7 @@ class Predict(Module, Parameter):
         config = dict(**self.config, **kwargs.pop("config", {}))
 
         # Get the right LM to use.
-        lm = kwargs.pop("lm", self.lm) or dsp.settings.lm
+        lm = kwargs.pop("lm", self.lm) or og_dsp.settings.lm
         assert lm is not None, "No LM is loaded."
 
         # If temperature is 0.0 but its n > 1, set temperature to 0.7.
@@ -123,15 +123,15 @@ class Predict(Module, Parameter):
             missing = [k for k in signature.input_fields if k not in kwargs]
             print(f"WARNING: Not all input fields were provided to module. Present: {present}. Missing: {missing}.")
 
-        if dsp.settings.experimental:
-            completions = new_generate(lm, signature, dsp.Example(demos=demos, **kwargs), **config)
+        if og_dsp.settings.experimental:
+            completions = new_generate(lm, signature, og_dsp.Example(demos=demos, **kwargs), **config)
         else:
             completions = old_generate(demos, signature, kwargs, config, self.lm, self.stage)
 
         pred = Prediction.from_completions(completions, signature=signature)
 
-        if kwargs.pop("_trace", True) and dsp.settings.trace is not None:
-            trace = dsp.settings.trace
+        if kwargs.pop("_trace", True) and og_dsp.settings.trace is not None:
+            trace = og_dsp.settings.trace
             trace.append((self, {**kwargs}, pred))
 
         return pred
@@ -148,16 +148,16 @@ class Predict(Module, Parameter):
 
 
 def old_generate(demos, signature, kwargs, config, lm, stage):
-    # Switch to legacy format for dsp.generate
-    x = dsp.Example(demos=demos, **kwargs)
+    # Switch to legacy format for og_dsp.generate
+    x = og_dsp.Example(demos=demos, **kwargs)
     template = signature_to_template(signature)
 
     if lm is None:
-        x, C = dsp.generate(template, **config)(x, stage=stage)
+        x, C = og_dsp.generate(template, **config)(x, stage=stage)
     else:
         # Note: query_only=True means the instructions and examples are not included.
-        with dsp.settings.context(lm=lm, query_only=True):
-            x, C = dsp.generate(template, **config)(x, stage=stage)
+        with og_dsp.settings.context(lm=lm, query_only=True):
+            x, C = og_dsp.generate(template, **config)(x, stage=stage)
 
     # assert stage in x, "The generated (input, output) example was not stored"
 

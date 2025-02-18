@@ -202,7 +202,7 @@ class TensorRTModel(LM):
         prompt: Union[list[dict[str, str]], str],
         **kwargs,
     ):
-        """TensorRTLLM generate method in dspy.
+        """TensorRTLLM generate method in og_dspy.
 
         Args:
             prompt (Union[list[dict[str, str]], str]): The prompt to pass. If prompt is not string

@@ -1,4 +1,4 @@
-""" 
+"""
 TODO: If we want to have Prediction::{**keys, completions, box} where box.{key} will behave as a value but also include
 the completions internally.
 
@@ -60,7 +60,7 @@ Overall, I think it's coherent semantics, for the time being, to say that any of
 In this case, it's just that Box will serve as syntactic sugar. If you don't want to think about `n` at all, you can
 pretend you have a string. If you do anything arbitrary on it, it indeed becomes a string.
 If you later decide to treat it as a list, it's easy to do so without losing that info when you say `pred.query`.
-    
+
 ### Things that are more interesting
 
 A) You can now pass pred.query to a DSPy predictor (or searcher, etc) and it can either naively work with the string,
@@ -71,10 +71,10 @@ This will need a lot more string-specific operations though:
 - when doing ' '.join() must do map(str, values_to_join). No implicit __str__ conversion!
 - We can probably automate this by having a general fallback? That either returns one value or maps that over all of them.
 
-B) When you say dspy.assert pred.sentence1.endswith('blue'), it will actually check all the alternatives and locally filter them if possible.
+B) When you say og_dspy.assert pred.sentence1.endswith('blue'), it will actually check all the alternatives and locally filter them if possible.
 It may keep the bad ones somewhere just in case too.
 
-We could make this a little more explicit like dspy.assert(pred.sentence1, lambda x: x.endswith('blue'))
+We could make this a little more explicit like og_dspy.assert(pred.sentence1, lambda x: x.endswith('blue'))
 
 C) When program_temperature is high, we can actually have some more interesting logic here. When you try to do things that are "selective",
 maybe we'll randomly give you one of the strings (that remain valid in the box, based on assertions).
@@ -93,15 +93,15 @@ class BoxType(type):
     # List of operations to override
     ops = [
         # Arithmetic operations
-        'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod', 'pow', 
+        'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod', 'pow',
         'lshift', 'rshift', 'and', 'or', 'xor',
         # 'r'-prefixed versions of arithmetic operations
-        'radd', 'rsub', 'rmul', 'rtruediv', 'rfloordiv', 'rmod', 
+        'radd', 'rsub', 'rmul', 'rtruediv', 'rfloordiv', 'rmod',
         'rpow', 'rlshift', 'rrshift', 'rand', 'ror', 'rxor',
         # Sequence operations
         'getitem', 'setitem', 'delitem', 'contains',
         # Unary and other operations
-        'neg', 'pos', 'abs', 'invert', 'round', 'len', 
+        'neg', 'pos', 'abs', 'invert', 'round', 'len',
         'getitem', 'setitem', 'delitem', 'contains', 'iter',
         # Mappings operations (for dicts)
         'get', 'keys', 'values', 'items',
@@ -138,10 +138,10 @@ class Box(metaclass=BoxType):
 
     def __str__(self):
         return str(self._value)
-    
+
     def __bool__(self):
         return bool(self._value)
-    
+
     # if method is missing just call it on the _value
     def __getattr__(self, name):
         return Box(getattr(self._value, name))

@@ -19,7 +19,7 @@
 
 
 # def openai_check_finetune(jobname):
-#     if dsp.settings.force_reuse_cached_compilation and jobname in compilations_assumed_to_exist:
+#     if og_dsp.settings.force_reuse_cached_compilation and jobname in compilations_assumed_to_exist:
 #         return compilations_assumed_to_exist[jobname]
 
 #     command = f"""openai api fine_tunes.get -i {jobname}"""
@@ -46,7 +46,7 @@
 # def convert_to_training_point2(y, inputs, outputs, template):
 #     assert len(inputs) + len(outputs) == len(template.fields)
 
-#     y_ = dsp.Example(**{f: y[f] for f in inputs}, demos=[])
+#     y_ = og_dsp.Example(**{f: y[f] for f in inputs}, demos=[])
 #     prompt = template(y_, show_guidelines=False)
 
 #     completion = y[outputs[0]]
@@ -156,7 +156,7 @@
 #     jobname, ft = openai_finetune(name, target)
 #     print(ft)
 
-#     ft = dsp.GPT3(model=ft, stop=" </s>")
+#     ft = og_dsp.GPT3(model=ft, stop=" </s>")
 #     return ft
 
 # # 4. Return updated program.
@@ -165,7 +165,7 @@
 #     compiled_lm = finetune(training_data, target=target)
 
 #     def compiled_program(*args, **kwargs):
-#         with dsp.settings.context(compiled_lm=compiled_lm, compiling=False):
+#         with og_dsp.settings.context(compiled_lm=compiled_lm, compiling=False):
 #             return program(*args, **kwargs)
 
 #     compiled_program.lm = compiled_lm

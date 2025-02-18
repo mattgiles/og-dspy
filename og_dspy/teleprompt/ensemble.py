@@ -3,13 +3,13 @@ import random
 from og_dspy.teleprompt.teleprompt import Teleprompter
 
 """
-TODO: The EnsembledProgram should actually imitate the structure of the individual programs (IF they are all compatible). This allows compiling with an ensemble program as a (singular) teacher. Basically the top majority-compatible trace will end up being used, if dspy.majority is the reduce_fn.
+TODO: The EnsembledProgram should actually imitate the structure of the individual programs (IF they are all compatible). This allows compiling with an ensemble program as a (singular) teacher. Basically the top majority-compatible trace will end up being used, if og_dspy.majority is the reduce_fn.
 """
 
 
 class Ensemble(Teleprompter):
     def __init__(self, *, reduce_fn=None, size=None, deterministic=False):
-        """A common reduce_fn is dspy.majority."""
+        """A common reduce_fn is og_dspy.majority."""
 
         assert deterministic is False, "TODO: Implement example hashing for deterministic ensemble."
 

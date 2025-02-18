@@ -1,5 +1,5 @@
 # # To Run:
-# # python -m dsp.modules.hf_server --port 4242 --model "google/flan-t5-base"
+# # python -m og_dsp.modules.hf_server --port 4242 --model "google/flan-t5-base"
 
 # # To Query:
 # # curl -d '{"prompt":".."}' -X POST "http://0.0.0.0:4242" -H 'Content-Type: application/json'

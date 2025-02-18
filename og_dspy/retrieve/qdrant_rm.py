@@ -30,10 +30,10 @@ class QdrantRM(dspy.Retrieve):
         ```python
         from qdrant_client import QdrantClient
 
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         qdrant_client = QdrantClient()
         retriever_model = QdrantRM("my_collection_name", qdrant_client=qdrant_client)
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         ```
 
         Below is a code snippet that shows how to use Qdrant in the forward() function of a module
@@ -62,7 +62,7 @@ class QdrantRM(dspy.Retrieve):
 
         super().__init__(k=k)
 
-    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int] = None, filter: Optional[models.Filter]=None) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int] = None, filter: Optional[models.Filter]=None) -> og_dspy.Prediction:
         """Search with Qdrant for self.k top passages for query.
 
         Args:
@@ -71,7 +71,7 @@ class QdrantRM(dspy.Retrieve):
             filter (Optional["Filter"]): "Look only for points which satisfies this conditions". Default: None.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         queries = [query_or_queries] if isinstance(query_or_queries, str) else query_or_queries
         queries = [q for q in queries if q]  # Filter empty queries

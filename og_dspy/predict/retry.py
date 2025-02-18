@@ -10,7 +10,7 @@ class Retry(Predict):
     def __init__(self, module):
         super().__init__(module.signature)
         self.module = module
-        self.original_signature = module.extended_signature if isinstance(module, dspy.ChainOfThought) else module.signature
+        self.original_signature = module.extended_signature if isinstance(module, og_dspy.ChainOfThought) else module.signature
         self.original_forward = module.forward
         self.new_signature = self._create_new_signature(self.original_signature)
 
@@ -18,13 +18,13 @@ class Retry(Predict):
         # Add "Past" input fields for each output field
         for key, value in signature.output_fields.items():
             actual_prefix = value.json_schema_extra["prefix"].split(":")[0] + ":"
-            signature = signature.append(f"past_{key}", dspy.InputField(
+            signature = signature.append(f"past_{key}", og_dspy.InputField(
                 prefix="Previous " + actual_prefix,
                 desc=f"past {actual_prefix} with errors",
                 format=value.json_schema_extra.get("format"),
             ))
 
-        signature = signature.append("feedback", dspy.InputField(
+        signature = signature.append("feedback", og_dspy.InputField(
             prefix="Instructions:",
             desc="Some instructions you must satisfy",
             format=str,
@@ -56,8 +56,8 @@ class Retry(Predict):
         kwargs.setdefault("demos", self.demos if self.demos is not None else [])
 
         # perform backtracking
-        if dspy.settings.backtrack_to == self:
-            for key, value in dspy.settings.backtrack_to_args.items():
+        if og_dspy.settings.backtrack_to == self:
+            for key, value in og_dspy.settings.backtrack_to_args.items():
                 kwargs.setdefault(key, value)
             pred = self.forward(**kwargs)
         else:
@@ -69,7 +69,7 @@ class Retry(Predict):
         for key in ["_trace", "demos", "signature", "new_signature", "config", "lm", "past_outputs"]:
             kwargs.pop(key, None)
 
-        if dsp.settings.trace is not None:
-            trace = dsp.settings.trace
+        if og_dsp.settings.trace is not None:
+            trace = og_dsp.settings.trace
             trace.append((self, {**kwargs}, pred))
         return pred

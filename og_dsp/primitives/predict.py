@@ -45,22 +45,22 @@ class Completions:
 def generate(template: Template, **kwargs) -> Callable:
     """Returns a callable function that generates completions for a given example using the provided template."""
     if hasattr(dsp.settings, "inspect"):
-        inspector = dsp.settings.inspect
+        inspector = og_dsp.settings.inspect
         _generate = inspector.inspect_func(dsp.predict._generate)
         return _generate(template, **kwargs)
     else:
-        return dsp.predict._generate(template, **kwargs)
+        return og_dsp.predict._generate(template, **kwargs)
 
 
 def _generate(template: Template, **kwargs) -> Callable:
     """Returns a callable function that generates completions for a given example using the provided template."""
-    if not dsp.settings.lm:
+    if not og_dsp.settings.lm:
         raise AssertionError("No LM is loaded.")
 
-    generator = dsp.settings.lm
+    generator = og_dsp.settings.lm
 
     def do_generate(example: Example, stage: str, max_depth: int = 2, original_example=None):
-        if not dsp.settings.lm:
+        if not og_dsp.settings.lm:
             raise AssertionError("No LM is loaded.")
         original_example = original_example or example
         assert stage is not None
@@ -92,7 +92,7 @@ def _generate(template: Template, **kwargs) -> Callable:
             completion[field_names[last_field_idx]] = ""
 
             # Recurse with greedy decoding and a shorter length.
-            max_tokens = kwargs.get("max_tokens", dsp.settings.lm.kwargs["max_tokens"])
+            max_tokens = kwargs.get("max_tokens", og_dsp.settings.lm.kwargs["max_tokens"])
             max_tokens = min(max(75, max_tokens // 2), max_tokens)
             new_kwargs = {**kwargs, "max_tokens": max_tokens, "n": 1, "temperature": 0.0,}
 
@@ -108,7 +108,7 @@ def _generate(template: Template, **kwargs) -> Callable:
         #     completion = completions[0]
         #     example[stage] = example.copy(**completion)
 
-        #     if dsp.settings.compiling:
+        #     if og_dsp.settings.compiling:
         #         inputs_ = set(original_example.keys())
         #         inputs = [
         #             f.input_variable
@@ -131,7 +131,7 @@ def _generate(template: Template, **kwargs) -> Callable:
         #             },
         #         )
         # else:
-        #     # assert not dsp.settings.compiling, "TODO: At this point, cannot compile n>1 generations"
+        #     # assert not og_dsp.settings.compiling, "TODO: At this point, cannot compile n>1 generations"
         #     example[stage] = dotdict(completions=completions)
 
         return example, completions
@@ -142,11 +142,11 @@ def _generate(template: Template, **kwargs) -> Callable:
 # def generate_sc(
 #     example, prompt, normalize=True, extract=None, prediction_field=None, **kwargs,
 # ):
-#     if not dsp.settings.lm:
+#     if not og_dsp.settings.lm:
 #         raise AssertionError("No LM is loaded.")
 #     kwargs = {"temperature": 0.7, "n": 20, "max_tokens": 150, **kwargs}
 
-#     completions = dsp.settings.lm(prompt, **kwargs)
+#     completions = og_dsp.settings.lm(prompt, **kwargs)
 #     completions = extract_final_answer(example, completions, extract=extract)
 #     return majority_vote_(
 #         completions, normalize=normalize, prediction_field=prediction_field,
@@ -154,7 +154,7 @@ def _generate(template: Template, **kwargs) -> Callable:
 
 
 # def extract_final_answer(example, completions, extract=None):
-#     if not dsp.settings.lm:
+#     if not og_dsp.settings.lm:
 #         raise AssertionError("No LM is loaded.")
 #     if extract:
 #         completions = [extract(example, p) for p in completions]
@@ -164,7 +164,7 @@ def _generate(template: Template, **kwargs) -> Callable:
 #         ]
 
 #     # TODO: make thread-safe?
-#     dsp.settings.lm.history.append(
+#     og_dsp.settings.lm.history.append(
 #         {**dsp.settings.lm.history[-1], "completions": completions},
 #     )
 
@@ -186,7 +186,7 @@ def _generate(template: Template, **kwargs) -> Callable:
 # def majority_vote_(completions: Completions, normalize: bool, prediction_field: str):
 #     """Core logic for majority vote."""
 
-#     if not dsp.settings.lm:
+#     if not og_dsp.settings.lm:
 #         raise AssertionError("No LM is loaded.")
 
 #     normalized_to_original = {}
@@ -215,7 +215,7 @@ def _generate(template: Template, **kwargs) -> Callable:
 #     if normalize:
 #         pred = normalized_to_original[pred]
 
-#     dsp.settings.lm.history.append(
+#     og_dsp.settings.lm.history.append(
 #         {**dsp.settings.lm.history[-1], "topk": topk, "completions": [pred]},
 #     )
 

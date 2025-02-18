@@ -39,12 +39,12 @@ class DataLoader(Dataset):
             for split_name in dataset.keys():
                 if fields:
                     returned_split[split_name] = [
-                        dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys)
+                        og_dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys)
                         for row in dataset[split_name]
                     ]
                 else:
                     returned_split[split_name] = [
-                        dspy.Example({field: row[field] for field in row.keys()}).with_inputs(*input_keys)
+                        og_dspy.Example({field: row[field] for field in row.keys()}).with_inputs(*input_keys)
                         for row in dataset[split_name]
                     ]
 
@@ -52,11 +52,11 @@ class DataLoader(Dataset):
         except AttributeError:
             if fields:
                 return [
-                    dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for row in dataset
+                    og_dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for row in dataset
                 ]
             else:
                 return [
-                    dspy.Example({field: row[field] for field in row.keys()}).with_inputs(*input_keys)
+                    og_dspy.Example({field: row[field] for field in row.keys()}).with_inputs(*input_keys)
                     for row in dataset
                 ]
 
@@ -78,7 +78,7 @@ class DataLoader(Dataset):
             fields = list(df.columns)
 
         return [
-            dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for _, row in df.iterrows()
+            og_dspy.Example({field: row[field] for field in fields}).with_inputs(*input_keys) for _, row in df.iterrows()
         ]
 
     def from_json(self, file_path: str, fields: List[str] = None, input_keys: Tuple[str] = ()) -> List[dspy.Example]:

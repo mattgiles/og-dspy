@@ -47,15 +47,15 @@ class ChromadbRM(Retrieve):
         client(Optional[chromadb.Client]): Optional chromadb client provided by user, default to None
 
     Returns:
-        dspy.Prediction: An object containing the retrieved passages.
+        og_dspy.Prediction: An object containing the retrieved passages.
 
     Examples:
         Below is a code snippet that shows how to use this as the default retriever:
         ```python
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         # using default chromadb client
         retriever_model = ChromadbRM('collection_name', 'db_path')
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         # to test the retriever with "my query"
         retriever_model("my query")
         ```
@@ -63,11 +63,11 @@ class ChromadbRM(Retrieve):
         Use provided chromadb client
         ```python
         import chromadb
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         # say you have a chromadb running on a different port
         client = chromadb.HttpClient(host='localhost', port=8889)
         retriever_model = ChromadbRM('collection_name', 'db_path', client=client)
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         # to test the retriever with "my query"
         retriever_model("my query")
         ```
@@ -147,7 +147,7 @@ class ChromadbRM(Retrieve):
             query_or_queries (Union[str, List[str]]): The query or queries to search for.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         queries = (
             [query_or_queries]

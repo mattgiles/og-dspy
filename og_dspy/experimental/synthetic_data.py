@@ -8,9 +8,9 @@ import og_dspy
 
 
 class DescriptionSignature(dspy.Signature):
-    field_name = dspy.InputField(desc="name of a field")
-    example = dspy.InputField(desc="an example value for the field")
-    description = dspy.OutputField(desc="a short text only description of what the field contains")
+    field_name = og_dspy.InputField(desc="name of a field")
+    example = og_dspy.InputField(desc="an example value for the field")
+    description = og_dspy.OutputField(desc="a short text only description of what the field contains")
 
 
 class SyntheticDataGenerator:
@@ -51,7 +51,7 @@ class SyntheticDataGenerator:
             properties = data_schema['properties']
         elif self.examples:
             inferred_schema = self.examples[0].__dict__['_store']
-            descriptor = dspy.Predict(DescriptionSignature)
+            descriptor = og_dspy.Predict(DescriptionSignature)
             properties = {field: {'description': str((descriptor(field_name=field, example=str(inferred_schema[field]))).description)}
                           for field in inferred_schema.keys()}
         else:
@@ -72,7 +72,7 @@ class SyntheticDataGenerator:
         fields = self._prepare_fields(properties)
 
         signature_class = type(class_name, (dspy.Signature,), fields)
-        generator = dspy.Predict(signature_class, n=additional_samples_needed)
+        generator = og_dspy.Predict(signature_class, n=additional_samples_needed)
         response = generator(sindex=str(random.randint(1, additional_samples_needed)))
 
         return [dspy.Example({field_name: getattr(completion, field_name) for field_name in properties.keys()})
@@ -82,8 +82,8 @@ class SyntheticDataGenerator:
         """Prepare fields to generate in an appropriate format."""
         return {
             '__doc__': f"Generates the following outputs: {{{', '.join(properties.keys())}}}.",
-            'sindex': dspy.InputField(desc="a random string"),
-            **{field_name: dspy.OutputField(desc=properties[field_name].get('description', 'No description'))
+            'sindex': og_dspy.InputField(desc="a random string"),
+            **{field_name: og_dspy.OutputField(desc=properties[field_name].get('description', 'No description'))
                for field_name in properties.keys()},
         }
 

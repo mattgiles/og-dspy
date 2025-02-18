@@ -32,9 +32,9 @@ class MarqoRM(dspy.Retrieve):
         import marqo
         marqo_client = marqo.Client(url="http://0.0.0.0:8882")
 
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
         retriever_model = MarqoRM("my_index_name", marqo_client=marqo_client)
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         ```
 
         Below is a code snippet that shows how to use Marqo in the forward() function of a module
@@ -58,14 +58,14 @@ class MarqoRM(dspy.Retrieve):
 
         super().__init__(k=k)
 
-    def forward(self, query_or_queries: Union[str, List[str]], k=None, **kwargs) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, List[str]], k=None, **kwargs) -> og_dspy.Prediction:
         """Search with Marqo for self.k top passages for query
 
         Args:
             query_or_queries (Union[str, List[str]]): The query or queries to search for.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         queries = (
             [query_or_queries]

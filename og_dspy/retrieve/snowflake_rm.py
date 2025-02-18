@@ -46,7 +46,7 @@ class SnowflakeRM(dspy.Retrieve):
 
         super().__init__(k=k)
 
-    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int] = None) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int] = None) -> og_dspy.Prediction:
         """Search Snowflake document embeddings table for self.k top passages for query.
 
         Args:
@@ -54,7 +54,7 @@ class SnowflakeRM(dspy.Retrieve):
             k (Optional[int]): The number of top passages to retrieve. Defaults to self.k.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         k = k if k is not None else self.k
         queries = [query_or_queries] if isinstance(query_or_queries, str) else query_or_queries
@@ -78,7 +78,7 @@ class SnowflakeRM(dspy.Retrieve):
             k (Optional[int]): The number of top passages to retrieve. Defaults to self.k.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
         doc_table_value = self.embeddings_field
         doc_table_key = self.embeddings_text_field

@@ -27,7 +27,7 @@ class PgVectorRM(dspy.Retrieve):
 
     It needs to register the pgvector extension with the psycopg2 connection
 
-    Returns a list of dspy.Example objects
+    Returns a list of og_dspy.Example objects
 
     Args:
         db_url (str): A PostgreSQL database URL in psycopg2's DSN format
@@ -51,13 +51,13 @@ class PgVectorRM(dspy.Retrieve):
         openai.api_key = os.environ.get("OPENAI_API_KEY", None)
         openai_client = openai.OpenAI()
 
-        llm = dspy.OpenAI(model="gpt-3.5-turbo")
+        llm = og_dspy.OpenAI(model="gpt-3.5-turbo")
 
         DATABASE_URL should be in the format postgresql://user:password@host/database
         db_url=os.getenv("DATABASE_URL")
 
         retriever_model = PgVectorRM(conn, openai_client=openai_client, "paragraphs", fields=["text", "document_id"], k=20)
-        dspy.settings.configure(lm=llm, rm=retriever_model)
+        og_dspy.settings.configure(lm=llm, rm=retriever_model)
         ```
 
         Below is a code snippet that shows how to use PgVector in the forward() function of a module
@@ -106,7 +106,7 @@ class PgVectorRM(dspy.Retrieve):
             query  (str): The query to search for
             k (int): The number of top passages to retrieve. Defaults to the value set in the constructor.
         Returns:
-            dspy.Prediction: an object containing the retrieved passages.
+            og_dspy.Prediction: an object containing the retrieved passages.
         """
         # Embed query
         query_embedding = self._get_embeddings(query)

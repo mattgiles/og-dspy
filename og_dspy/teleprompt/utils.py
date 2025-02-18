@@ -398,7 +398,7 @@ def get_dspy_source_code(module):
     header = []
     base_code = ""
 
-    # Don't get source code for Predict or ChainOfThought modules (NOTE we will need to extend this list as more DSPy.modules are added)
+    # Don't get source code for Predict or ChainOfThought modules (NOTE we will need to extend this list as more og_dspy.modules are added)
     if not type(module).__name__ == "Predict" and not type(module).__name__ == "ChainOfThought":
         try:
             base_code = inspect.getsource(type(module))
@@ -426,7 +426,7 @@ def get_dspy_source_code(module):
                     except (TypeError, OSError):
                         header.append(str(item.signature))
                     completed_set.add(item.signature.__pydantic_parent_namespace__['signature_name'] + "_sig")
-            if isinstance(item, dspy.Module):
+            if isinstance(item, og_dspy.Module):
                 code = get_dspy_source_code(item).strip()
                 if code not in completed_set:
                     header.append(code)

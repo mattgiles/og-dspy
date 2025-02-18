@@ -92,7 +92,7 @@ class AzureAISearchRM(dspy.Retrieve):
         vector_filter_mode (Optional[VectorFilterMode]): The vector filter mode.
 
     Methods:
-        forward(query_or_queries: Union[str, List[str]], k: Optional[int]) -> dspy.Prediction:
+        forward(query_or_queries: Union[str, List[str]], k: Optional[int]) -> og_dspy.Prediction:
             Search for the top passages corresponding to the given query or queries.
 
         azure_search_request(
@@ -308,7 +308,7 @@ class AzureAISearchRM(dspy.Retrieve):
             res.append(tmp)
         return res
 
-    def forward(self, query_or_queries: Union[str, List[str]], k: Optional[int]) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, List[str]], k: Optional[int]) -> og_dspy.Prediction:
         """
         Search with pinecone for self.k top passages for query
 
@@ -316,7 +316,7 @@ class AzureAISearchRM(dspy.Retrieve):
             query_or_queries (Union[str, List[str]]): The query or queries to search for.
 
         Returns:
-            dspy.Prediction: An object containing the retrieved passages.
+            og_dspy.Prediction: An object containing the retrieved passages.
         """
 
         k = k if k is not None else self.k

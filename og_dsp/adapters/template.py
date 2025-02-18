@@ -54,12 +54,12 @@ class Template(BaseTemplate):
 
     def guidelines(self, show_guidelines=True) -> str:
         """Returns the task guidelines as described in the lm prompt"""
-        if (not show_guidelines) or (hasattr(dsp.settings, "show_guidelines") and not dsp.settings.show_guidelines):
+        if (not show_guidelines) or (hasattr(dsp.settings, "show_guidelines") and not og_dsp.settings.show_guidelines):
             return ""
 
         result = "Follow the following format.\n\n"
 
-        example = dsp.Example()
+        example = og_dsp.Example()
         for field in self.fields:
             example[field.input_variable] = field.description
         example.augmented = self._has_augmented_guidelines()
@@ -86,7 +86,7 @@ class Template(BaseTemplate):
         Returns:
             Example: The example with the output variables filled in
         """
-        example = dsp.Example(example)
+        example = og_dsp.Example(example)
 
         raw_pred = raw_pred.strip()
 
@@ -105,7 +105,7 @@ class Template(BaseTemplate):
                 offset = raw_pred.find(next_field_name)
 
                 if offset >= 0:
-                    if dspy.settings.release >= 20231003:
+                    if og_dspy.settings.release >= 20231003:
                         example[self.fields[idx].output_variable] = raw_pred[:offset].strip().rstrip("---").strip()
                         raw_pred = raw_pred[offset + len(next_field_name) :].strip().rstrip("---").strip()
                     else:
@@ -114,7 +114,7 @@ class Template(BaseTemplate):
 
                     idx += 1
                 else:
-                    if dspy.settings.release >= 20231003:
+                    if og_dspy.settings.release >= 20231003:
                         example[self.fields[idx].output_variable] = raw_pred.strip().rstrip("---").strip()
                     else:
                         example[self.fields[idx].output_variable] = raw_pred.strip()
@@ -126,7 +126,7 @@ class Template(BaseTemplate):
             else:
                 assert idx == len(self.fields) - 1, (idx, len(self.fields))
 
-                if dspy.settings.release >= 20231003:
+                if og_dspy.settings.release >= 20231003:
                     example[self.fields[idx].output_variable] = raw_pred.strip().rstrip("---").strip()
                 else:
                     example[self.fields[idx].output_variable] = raw_pred.strip()
@@ -136,9 +136,9 @@ class Template(BaseTemplate):
         return example
 
     def __call__(self, example, show_guidelines=True) -> str:
-        example = dsp.Example(example)
+        example = og_dsp.Example(example)
 
-        if hasattr(dsp.settings, "query_only") and dsp.settings.query_only:
+        if hasattr(dsp.settings, "query_only") and og_dsp.settings.query_only:
             return self.query(example)
 
         # The training data should not contain the output variable
@@ -165,7 +165,7 @@ class Template(BaseTemplate):
             if all((field.name in rdemo) for field in self.fields if field.input_variable in example):
                 import og_dspy
 
-                if dspy.settings.release >= 20230928:
+                if og_dspy.settings.release >= 20230928:
                     new_ademos.append(rdemo)
                 else:
                     ademos.append(rdemo)

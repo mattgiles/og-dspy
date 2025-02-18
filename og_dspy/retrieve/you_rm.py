@@ -91,7 +91,7 @@ class YouRM(dspy.Retrieve):
         params = {k: v for k, v in params.items() if v is not None}
         return params
 
-    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int] = None) -> dspy.Prediction:
+    def forward(self, query_or_queries: Union[str, list[str]], k: Optional[int] = None) -> og_dspy.Prediction:
         k = k if k is not None else self.k
 
         queries = [query_or_queries] if isinstance(query_or_queries, str) else query_or_queries

@@ -58,7 +58,7 @@ class ClarifaiRM(dspy.Retrieve):
 
     def forward(
         self, query_or_queries: Union[str, List[str]], k: Optional[int] = None,**kwargs,
-    ) -> dspy.Prediction:
+    ) -> og_dspy.Prediction:
         """Uses clarifai-python SDK search function and retrieves top_k similar passages for given query,
         Args:
              query_or_queries : single query or list of queries
@@ -71,9 +71,9 @@ class ClarifaiRM(dspy.Retrieve):
         Below is a code snippet that shows how to use Marqo as the default retriver:
          ```python
          import clarifai
-         llm = dspy.Clarifai(model=MODEL_URL, api_key="YOUR CLARIFAI_PAT")
+         llm = og_dspy.Clarifai(model=MODEL_URL, api_key="YOUR CLARIFAI_PAT")
          retriever_model = ClarifaiRM(clarifai_user_id="USER_ID", clarfiai_app_id="APP_ID", clarifai_pat="YOUR CLARIFAI_PAT")
-         dspy.settings.configure(lm=llm, rm=retriever_model)
+         og_dspy.settings.configure(lm=llm, rm=retriever_model)
          ```
         """
         queries = (

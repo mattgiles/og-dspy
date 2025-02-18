@@ -63,12 +63,12 @@ class ModuleGraph:
         """ Process submodules of a module and add them to the graph"""
 
         for sub_module_name, sub_module in module.__dict__.items():
-            if isinstance(sub_module, dspy.Predict):
+            if isinstance(sub_module, og_dspy.Predict):
                 sub_module_name = self.generate_module_name(sub_module_name, type(sub_module))
                 self.process_submodule(f"{module_name}__{sub_module_name}", sub_module)
-            elif isinstance(sub_module, (dspy.Module, dspy.Retrieve)):
+            elif isinstance(sub_module, (dspy.Module, og_dspy.Retrieve)):
                 self.add_module(f"{module_name}__{sub_module_name}", sub_module)
-                if isinstance(sub_module, dspy.Retrieve):
+                if isinstance(sub_module, og_dspy.Retrieve):
                     self.graph.edge("rm", 'lm', label='RM used in Module')
 
     def process_submodule(self, sub_module_name, sub_module):
@@ -109,32 +109,32 @@ class ModuleGraph:
 # load_dotenv()
 
 # # Configuration of dspy models
-# llm = dspy.OpenAI(
+# llm = og_dspy.OpenAI(
 #     model='gpt-3.5-turbo',
 #     api_key=os.environ['OPENAI_API_KEY'],
 #     max_tokens=100
 # )
 
-# colbertv2_wiki = dspy.ColBERTv2(url='http://20.102.90.50:2017/wiki17_abstracts')
+# colbertv2_wiki = og_dspy.ColBERTv2(url='http://20.102.90.50:2017/wiki17_abstracts')
 
-# dspy.settings.configure(lm=llm, rm=colbertv2_wiki)
+# og_dspy.settings.configure(lm=llm, rm=colbertv2_wiki)
 
 # class GenerateAnswer(dspy.Signature):
 #   "Answer with long and detailed answers"
-#   context = dspy.InputField(desc="may content relevant facts")
-#   question = dspy.InputField()
-#   answer = dspy.OutputField(desc="often between 10 and 50 words")
+#   context = og_dspy.InputField(desc="may content relevant facts")
+#   question = og_dspy.InputField()
+#   answer = og_dspy.OutputField(desc="often between 10 and 50 words")
 
 # class RAG(dspy.Module):
 #   def __init__(self, num_passages=3):
 #     super().__init__()
-#     self.retrieve = dspy.Retrieve(k=num_passages)
-#     self.generate_answer = dspy.ChainOfThought(GenerateAnswer)
+#     self.retrieve = og_dspy.Retrieve(k=num_passages)
+#     self.generate_answer = og_dspy.ChainOfThought(GenerateAnswer)
 
 #   def forward(self, question):
 #     context = self.retrieve(question).passages
 #     prediction = self.generate_answer(context=context, question=question)
-#     return dspy.Prediction(context=context, answer=prediction.answer)
+#     return og_dspy.Prediction(context=context, answer=prediction.answer)
 
 # rag_system = RAG()
 # graph = ModuleGraph("RAG", rag_system)

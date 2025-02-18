@@ -10,48 +10,48 @@ from .utils.logging import logger, set_log_output
 # Functional must be imported after primitives, predict and signatures
 from .functional import *  # isort: skip
 
-settings = dsp.settings
+settings = og_dsp.settings
 
-LM = dsp.LM
+LM = og_dsp.LM
 
-AzureOpenAI = dsp.AzureOpenAI
-OpenAI = dsp.GPT3
-MultiOpenAI = dsp.MultiOpenAI
-Mistral = dsp.Mistral
-Databricks = dsp.Databricks
-Cohere = dsp.Cohere
-ColBERTv2 = dsp.ColBERTv2
-ColBERTv2RerankerLocal = dsp.ColBERTv2RerankerLocal
-ColBERTv2RetrieverLocal = dsp.ColBERTv2RetrieverLocal
-Pyserini = dsp.PyseriniRetriever
-Clarifai = dsp.ClarifaiLLM
-CloudflareAI = dsp.CloudflareAI
-Google = dsp.Google
-GoogleVertexAI = dsp.GoogleVertexAI
-GROQ = dsp.GroqLM
-Snowflake = dsp.Snowflake
-Claude = dsp.Claude
+AzureOpenAI = og_dsp.AzureOpenAI
+OpenAI = og_dsp.GPT3
+MultiOpenAI = og_dsp.MultiOpenAI
+Mistral = og_dsp.Mistral
+Databricks = og_dsp.Databricks
+Cohere = og_dsp.Cohere
+ColBERTv2 = og_dsp.ColBERTv2
+ColBERTv2RerankerLocal = og_dsp.ColBERTv2RerankerLocal
+ColBERTv2RetrieverLocal = og_dsp.ColBERTv2RetrieverLocal
+Pyserini = og_dsp.PyseriniRetriever
+Clarifai = og_dsp.ClarifaiLLM
+CloudflareAI = og_dsp.CloudflareAI
+Google = og_dsp.Google
+GoogleVertexAI = og_dsp.GoogleVertexAI
+GROQ = og_dsp.GroqLM
+Snowflake = og_dsp.Snowflake
+Claude = og_dsp.Claude
 
-HFClientTGI = dsp.HFClientTGI
+HFClientTGI = og_dsp.HFClientTGI
 HFClientVLLM = HFClientVLLM
 
-Anyscale = dsp.Anyscale
-Together = dsp.Together
-HFModel = dsp.HFModel
-OllamaLocal = dsp.OllamaLocal
-LlamaCpp = dsp.LlamaCpp
+Anyscale = og_dsp.Anyscale
+Together = og_dsp.Together
+HFModel = og_dsp.HFModel
+OllamaLocal = og_dsp.OllamaLocal
+LlamaCpp = og_dsp.LlamaCpp
 
-Bedrock = dsp.Bedrock
-Sagemaker = dsp.Sagemaker
-AWSModel = dsp.AWSModel
-AWSMistral = dsp.AWSMistral
-AWSAnthropic = dsp.AWSAnthropic
-AWSMeta = dsp.AWSMeta
+Bedrock = og_dsp.Bedrock
+Sagemaker = og_dsp.Sagemaker
+AWSModel = og_dsp.AWSModel
+AWSMistral = og_dsp.AWSMistral
+AWSAnthropic = og_dsp.AWSAnthropic
+AWSMeta = og_dsp.AWSMeta
 
-Watsonx = dsp.Watsonx
-PremAI = dsp.PremAI
+Watsonx = og_dsp.Watsonx
+PremAI = og_dsp.PremAI
 
-You = dsp.You
+You = og_dsp.You
 
 configure = settings.configure
 context = settings.context

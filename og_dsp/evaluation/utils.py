@@ -21,7 +21,7 @@ def evaluateRetrieval(fn, dev, metric=None):
         d = dict(example)
 
         # d['prediction'] = prediction.answer
-        d['correct'] =  dsp.passage_match(prediction.context, example.answer)
+        d['correct'] =  og_dsp.passage_match(prediction.context, example.answer)
         data.append(d)
 
     df = pd.DataFrame(data)

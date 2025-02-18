@@ -53,7 +53,7 @@ class Evaluate:
         self.return_outputs = return_outputs
 
         if "display" in _kwargs:
-            dspy.logger.warning(
+            og_dspy.logger.warning(
                 "DeprecationWarning: 'display' has been deprecated. To see all information for debugging,"
                 " use 'dspy.set_log_level('debug')'. In the future this will raise an error.",
             )
@@ -90,7 +90,7 @@ class Evaluate:
 
             def interrupt_handler(sig, frame):
                 self.cancel_jobs.set()
-                dspy.logger.warning("Received SIGINT. Cancelling evaluation.")
+                og_dspy.logger.warning("Received SIGINT. Cancelling evaluation.")
                 default_handler(sig, frame)
 
             signal.signal(signal.SIGINT, interrupt_handler)
@@ -123,7 +123,7 @@ class Evaluate:
             pbar.close()
 
         if self.cancel_jobs.is_set():
-            dspy.logger.warning("Evaluation was cancelled. The results may be incomplete.")
+            og_dspy.logger.warning("Evaluation was cancelled. The results may be incomplete.")
             raise KeyboardInterrupt
 
         return reordered_devset, ncorrect, ntotal
@@ -154,7 +154,7 @@ class Evaluate:
 
         def wrapped_program(example_idx, example):
             # NOTE: TODO: Won't work if threads create threads!
-            thread_stacks = dspy.settings.stack_by_thread
+            thread_stacks = og_dspy.settings.stack_by_thread
             creating_new_thread = threading.get_ident() not in thread_stacks
             if creating_new_thread:
                 thread_stacks[threading.get_ident()] = list(dspy.settings.main_stack)
@@ -168,9 +168,9 @@ class Evaluate:
 
                 # increment assert and suggest failures to program's attributes
                 if hasattr(program, "_assert_failures"):
-                    program._assert_failures += dspy.settings.get("assert_failures")
+                    program._assert_failures += og_dspy.settings.get("assert_failures")
                 if hasattr(program, "_suggest_failures"):
-                    program._suggest_failures += dspy.settings.get("suggest_failures")
+                    program._suggest_failures += og_dspy.settings.get("suggest_failures")
 
                 return example_idx, example, prediction, score
             except Exception as e:
@@ -180,7 +180,7 @@ class Evaluate:
                 if current_error_count >= self.max_errors:
                     raise e
 
-                dspy.logger.error(f"Error for example in dev set: \t\t {e}")
+                og_dspy.logger.error(f"Error for example in dev set: \t\t {e}")
 
                 return example_idx, example, {}, 0.0
             finally:
@@ -200,7 +200,7 @@ class Evaluate:
                 display_progress,
             )
 
-        dspy.logger.info(f"Average Metric: {ncorrect} / {ntotal} ({round(100 * ncorrect / ntotal, 1)}%)")
+        og_dspy.logger.info(f"Average Metric: {ncorrect} / {ntotal} ({round(100 * ncorrect / ntotal, 1)}%)")
 
         predicted_devset = sorted(reordered_devset)
 
